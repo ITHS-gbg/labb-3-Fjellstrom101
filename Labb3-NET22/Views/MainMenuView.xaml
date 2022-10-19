@@ -1,0 +1,109 @@
+﻿<UserControl
+    x:Class="Labb3_NET22.Views.MainMenuView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Labb3_NET22.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Labb3_NET22.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:MainMenuViewModel}"
+    d:DesignHeight="800"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="PlayQuizButton" TargetType="Button">
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#FFF2D402" />
+                            <GradientStop Offset="1" Color="#FFB3BA08" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="6" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+            <Style x:Key="QuizImage" TargetType="Border">
+                <Setter Property="Margin" Value="6,6,6,12" />
+                <Setter Property="Background" Value="White" />
+                <Setter Property="CornerRadius" Value="14" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <TabControl Background="CornflowerBlue">
+        <TabItem Background="CornflowerBlue" Header="Quiz">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="16*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    CornerRadius="10">
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        ItemsSource="{Binding QuizCollection}"
+                        SelectedItem="{Binding SelectedQuiz}"
+                        SelectionMode="Single">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="540" Header="Quiz Titel">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                Text="{Binding Title}"
+                                                TextAlignment="Left" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+
+                                </GridViewColumn>
+                                <GridViewColumn Width="140" Header="Antal frågor">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding QuestionCount}" TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                </Border>
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Padding="10,6"
+                        Command="{Binding PlayQuizCommand}"
+                        Content="Spela Quiz"
+                        Style="{StaticResource PlayQuizButton}" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Ämnen" />
+    </TabControl>
+</UserControl>
