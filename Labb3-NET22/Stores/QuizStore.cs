@@ -15,7 +15,7 @@ public class QuizStore
     {
         _quizCollection = new ObservableCollection<Quiz>();
         Quiz tempQuiz = new Quiz("Svenska kungar");
-        tempQuiz.AddQuestion("Vilket år dog Gustav Vasa?", 0, new string[] { "1650", "1593", "1539", "1560" });
+        tempQuiz.AddQuestion("Vilket år dog Gustav Vasa?", 3, new string[] { "1650", "1593", "1539", "1560" });
         _quizCollection.Add(tempQuiz);
         _quizCollection.Add(new Quiz("TV reklam"));
 

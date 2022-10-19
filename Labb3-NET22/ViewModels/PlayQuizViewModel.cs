@@ -26,8 +26,19 @@ public class PlayQuizViewModel : ObservableObject
 
     private void AnswerQuestionCommandHandler(object parameter)
     {
-        //TODO Fortsätt här
-        WrongAnswer = Int32.Parse(parameter.ToString());
+
+        RightAnswer = CurrentQuestion.CorrectAnswer;
+
+        if (Int32.Parse(parameter.ToString()) != RightAnswer)
+        {
+            WrongAnswer = Int32.Parse(parameter.ToString());
+        }
+        else
+        {
+            WrongAnswer = -1;
+        }
+
+        OnPropertyChanged(nameof(RightAnswer));
         OnPropertyChanged(nameof(WrongAnswer));
     }
 

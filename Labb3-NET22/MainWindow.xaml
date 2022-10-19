@@ -9,7 +9,7 @@
     xmlns:views="clr-namespace:Labb3_NET22.Views"
     Title="MainWindow"
     Width="800"
-    Height="800"
+    Height="640"
     Background="CornflowerBlue"
     mc:Ignorable="d">
     <Grid>

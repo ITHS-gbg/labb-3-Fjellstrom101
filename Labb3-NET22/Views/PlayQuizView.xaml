@@ -19,14 +19,7 @@
                 <Setter Property="Foreground" Value="CornflowerBlue" />
                 <Setter Property="FontSize" Value="20" />
                 <Setter Property="FontWeight" Value="Bold" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding WrongAnswer}" Value="3">
-                        <Setter Property="Background" Value="Red" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding RightAnswer}" Value="1">
-                        <Setter Property="Background" Value="Green" />
-                    </DataTrigger>
-                </Style.Triggers>
+
                 <Style.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="14" />
@@ -60,42 +53,129 @@
             Grid.Column="1"
             Command="{Binding AnswerQuestionCommand}"
             CommandParameter="0"
-            Content="{Binding CurrentQuestion.Answers[0]}"
-            Style="{StaticResource QuizButton}" />
+            Content="{Binding CurrentQuestion.Answers[0]}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource QuizButton}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RightAnswer}" Value="0">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#FFF2D402" />
+                                        <GradientStop Offset="1" Color="#FFB3BA08" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WrongAnswer}" Value="0">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Button
             Grid.Row="2"
             Grid.Column="2"
             Command="{Binding AnswerQuestionCommand}"
             CommandParameter="1"
-            Content="{Binding CurrentQuestion.Answers[1]}"
-            Style="{StaticResource QuizButton}" />
+            Content="{Binding CurrentQuestion.Answers[1]}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource QuizButton}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RightAnswer}" Value="1">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#FFF2D402" />
+                                        <GradientStop Offset="1" Color="#FFB3BA08" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WrongAnswer}" Value="1">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Button
             Grid.Row="3"
             Grid.Column="1"
             Command="{Binding AnswerQuestionCommand}"
             CommandParameter="2"
-            Content="{Binding CurrentQuestion.Answers[2]}"
-            Style="{StaticResource QuizButton}" />
+            Content="{Binding CurrentQuestion.Answers[2]}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource QuizButton}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RightAnswer}" Value="2">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#FFF2D402" />
+                                        <GradientStop Offset="1" Color="#FFB3BA08" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WrongAnswer}" Value="2">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Button
             Grid.Row="3"
             Grid.Column="2"
             Command="{Binding AnswerQuestionCommand}"
             CommandParameter="3"
-            Content="{Binding CurrentQuestion.Answers[3]}"
-            Style="{StaticResource QuizButton}" />
+            Content="{Binding CurrentQuestion.Answers[3]}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource QuizButton}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RightAnswer}" Value="3">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#FFF2D402" />
+                                        <GradientStop Offset="1" Color="#FFB3BA08" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WrongAnswer}" Value="3">
+                            <Setter Property="Background" Value="OrangeRed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Border
             Grid.Row="1"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Style="{StaticResource QuizImage}">
-
-            <TextBlock
-                VerticalAlignment="Center"
-                FontSize="20"
-                FontWeight="Bold"
-                Foreground="CornflowerBlue"
-                Text="{Binding CurrentQuestion.Statement}"
-                TextAlignment="Center" />
+            <Grid>
+                <Image />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="CornflowerBlue"
+                    Text="{Binding CurrentQuestion.Statement}"
+                    TextAlignment="Center" />
+            </Grid>
         </Border>
+
     </Grid>
 </UserControl>
