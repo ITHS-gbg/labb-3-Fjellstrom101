@@ -12,12 +12,40 @@
     Background="CornflowerBlue"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="RoundCorners">
+        <Style x:Key="GreenButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#FFF2D402" />
+                        <GradientStop Offset="1" Color="#FFB3BA08" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="4" />
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6" />
                 </Style>
             </Style.Resources>
+        </Style>
+        <Style x:Key="RoundCorners">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style
+            x:Key="RedButton"
+            BasedOn="{StaticResource RoundCorners}"
+            TargetType="Button">
+            <Setter Property="Background" Value="OrangeRed" />
+            <Setter Property="Margin" Value="6" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
         </Style>
         <Style TargetType="Label">
             <Setter Property="Margin" Value="6,0,6,0" />
@@ -86,6 +114,17 @@
             <ListView Grid.Row="1" />
         </Grid>
 
+        <!--  Frågor Knappar  -->
+
+        <Grid Grid.Row="6" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Style="{StaticResource GreenButton}">Lägg till</Button>
+            <Button Grid.Column="1" Style="{StaticResource RedButton}">Ta Bort</Button>
+        </Grid>
+
         <!--  Kategori  -->
         <Grid
             Grid.Row="1"
@@ -112,7 +151,7 @@
         <Grid Grid.Row="2" Grid.Column="3">
             <StackPanel Orientation="Vertical">
                 <Label Height="{Binding ActualHeight, ElementName=QuestionsLabel}" />
-                <Button>Lägg till</Button>
+                <Button Style="{StaticResource GreenButton}">Lägg till</Button>
                 <Button>Delete</Button>
             </StackPanel>
         </Grid>
@@ -151,6 +190,19 @@
             <RadioButton Grid.Row="2" VerticalContentAlignment="Center" />
             <RadioButton Grid.Row="3" VerticalContentAlignment="Center" />
             <RadioButton Grid.Row="4" VerticalContentAlignment="Center" />
+        </Grid>
+        <Grid
+            Grid.Row="7"
+            Grid.Column="2"
+            Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="3" Style="{StaticResource ResourceKey=GreenButtonBase}">Spara</Button>
+            <Button Grid.Column="2" Style="{StaticResource RedButton}">Avbryt</Button>
         </Grid>
 
     </Grid>
