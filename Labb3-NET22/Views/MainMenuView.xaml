@@ -102,6 +102,17 @@
                         Content="Spela Quiz"
                         Style="{StaticResource PlayQuizButton}" />
                 </StackPanel>
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+                    <Button
+                        Padding="10,6"
+                        Command="{Binding CreateOrEditCommand}"
+                        Content="Skapa Quiz"
+                        Style="{StaticResource PlayQuizButton}" />
+                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Ämnen" />

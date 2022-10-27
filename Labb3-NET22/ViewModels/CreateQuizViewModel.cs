@@ -1,6 +1,8 @@
-﻿namespace Labb3_NET22.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class CreateQuizViewModel
+namespace Labb3_NET22.ViewModels;
+
+public class CreateQuizViewModel : ObservableObject
 {
     
 }

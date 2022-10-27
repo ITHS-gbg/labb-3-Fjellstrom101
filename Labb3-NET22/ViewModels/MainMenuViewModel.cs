@@ -29,14 +29,14 @@ public class MainMenuViewModel : ObservableObject
     private NavigationStore _navigationStore;
     public ObservableCollection<Quiz> QuizCollection => _quizStore.QuizCollection;
 
-    public int SelectedIndex { get; set; }
-
     public ICommand PlayQuizCommand { get; }
+    public ICommand CreateOrEditCommand { get; }
     public MainMenuViewModel(QuizStore quizStore, NavigationStore navigationStore)
     {
         _quizStore = quizStore;
         _navigationStore = navigationStore;
         PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, PlayQuizCommandCanExecute);
+        CreateOrEditCommand = new RelayCommand(CreateOrEditCommandExecute);
     }
 
     public void PlayQuizCommandExecute()
@@ -47,5 +47,9 @@ public class MainMenuViewModel : ObservableObject
     {
         return SelectedQuiz != null;
     }
-    
+    public void CreateOrEditCommandExecute()
+    {
+        _navigationStore.CurrentViewModel = new CreateQuizViewModel();
+    }
+
 }

@@ -23,7 +23,7 @@ public class Quiz
 
     public Question GetRandomQuestion()
     {
-        return _questions.ElementAt(_random.Next(_questions.Count()));
+        return _questions.ElementAtOrDefault(_random.Next(_questions.Count()));
     }
 
     public void AddQuestion(string statement, int correctAnswer, params string[] answers)

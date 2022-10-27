@@ -15,4 +15,10 @@ public class Question
         Answers = answers;
         CorrectAnswer = correctAnswer;
     }
+    public Question(string statement)
+    {
+        Statement = statement;
+        Answers = new string[]{"", "", "", ""};
+        CorrectAnswer = 0;
+    }
 }
