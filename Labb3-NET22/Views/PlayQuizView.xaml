@@ -166,7 +166,7 @@
             Grid.ColumnSpan="2"
             Style="{StaticResource QuizImage}">
             <Grid>
-                <Image />
+                <Image Source="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="20"

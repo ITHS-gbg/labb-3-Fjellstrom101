@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,21 +18,25 @@ public class MainMenuViewModel : ObservableObject
         get => _selectedQuiz;
         set
         {
-            if (value == _selectedQuiz)
-            {
-                return;
-            }
-
             SetProperty(ref _selectedQuiz, value);
-            (PlayQuizCommand as RelayCommand).NotifyCanExecuteChanged();
+
+            if (value == null) CreateOrEditQuizButtonText = "Skapa Quiz";
+            else CreateOrEditQuizButtonText = "Ändra Quiz";
+            OnPropertyChanged(nameof(CreateOrEditQuizButtonText));
+
+            PlayQuizCommand.NotifyCanExecuteChanged();
         }
     }
 
-    private NavigationStore _navigationStore;
-    public ObservableCollection<Quiz> QuizCollection => _quizStore.QuizCollection;
+    public String CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
 
-    public ICommand PlayQuizCommand { get; }
-    public ICommand CreateOrEditCommand { get; }
+    private NavigationStore _navigationStore;
+    public IEnumerable<Quiz> Quizzes => _quizStore.Quizzes;
+    public IEnumerable<Category> Categories => _quizStore.Categories;
+
+    public IRelayCommand PlayQuizCommand { get; }
+    public IRelayCommand CreateOrEditCommand { get; }
+
     public MainMenuViewModel(QuizStore quizStore, NavigationStore navigationStore)
     {
         _quizStore = quizStore;
@@ -41,7 +47,7 @@ public class MainMenuViewModel : ObservableObject
 
     public void PlayQuizCommandExecute()
     {
-        _navigationStore.CurrentViewModel = new PlayQuizViewModel(SelectedQuiz);
+        _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizStore,SelectedQuiz.Clone());
     }
     public bool PlayQuizCommandCanExecute()
     {
@@ -49,7 +55,8 @@ public class MainMenuViewModel : ObservableObject
     }
     public void CreateOrEditCommandExecute()
     {
-        _navigationStore.CurrentViewModel = new CreateQuizViewModel();
+        if (_selectedQuiz != null) _navigationStore.CurrentViewModel = new EditQuizViewModel(_navigationStore, _quizStore, _selectedQuiz);
+        else _navigationStore.CurrentViewModel = new CreateQuizViewModel(_navigationStore, _quizStore);
     }
 
 }

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Labb3_NET22.DataModels;
+using Labb3_NET22.Stores;
 
 namespace Labb3_NET22.ViewModels;
 
@@ -12,16 +13,56 @@ public class PlayQuizViewModel : ObservableObject
 {
     private Quiz _quiz;
     private Question _currentQuestion; // Inte planerad
+    private NavigationStore _navigationStore;
+    private QuizStore _quizStore;
+    private int _wrongAnswer = -1;
+    private int _rightAnswer = -1;
+    private int[] score = new[] { 0, 0 };
+    private string _imageFilePath = "";
 
-    public int WrongAnswer { get; set; } = -1; //Inte planerad, Snyggare lösning?
-    public int RightAnswer { get; set; } = -1; //Inte planerad, Snyggare lösning?
-    public Question CurrentQuestion => _currentQuestion;
-    public ICommand AnswerQuestionCommand { get; }
-    public PlayQuizViewModel(Quiz quiz)
+
+    public int WrongAnswer
     {
+        get => _wrongAnswer;
+        set
+        {
+            SetProperty(ref _wrongAnswer, value);
+        }
+    }
 
+    public int RightAnswer
+    {
+        get => _rightAnswer;
+        set
+        {
+            SetProperty(ref _rightAnswer, value);
+        }
+    }
+
+    public Question CurrentQuestion
+    {
+        set
+        {
+            SetProperty(ref _currentQuestion, value);
+        }
+        get => _currentQuestion;
+    }
+
+    public String ImageFilePath
+    {
+        get => _imageFilePath;
+        set
+        {
+            SetProperty(ref _imageFilePath, value);
+        }
+    }
+    public IRelayCommand AnswerQuestionCommand { get; }
+    public PlayQuizViewModel(NavigationStore navigationStore, QuizStore quizStore, Quiz quiz)
+    {
+        _navigationStore = navigationStore;
         _quiz = quiz;
-        _currentQuestion = _quiz.GetRandomQuestion();
+        _quizStore = quizStore;
+
         AnswerQuestionCommand = new RelayCommand<object>(AnswerQuestionCommandHandler, AnswerQuestionCommandCanExecute);
         RenderQuestionAsync(true);
     }
@@ -30,6 +71,7 @@ public class PlayQuizViewModel : ObservableObject
     {
 
         RightAnswer = CurrentQuestion.CorrectAnswer;
+        score[1]++;
 
         if (Int32.Parse(parameter.ToString()) != RightAnswer)
         {
@@ -37,19 +79,21 @@ public class PlayQuizViewModel : ObservableObject
         }
         else
         {
+            score[0]++;
             WrongAnswer = -1;
         }
 
         OnPropertyChanged(nameof(RightAnswer));
         OnPropertyChanged(nameof(WrongAnswer));
+        
         //Måste man?
         //(AnswerQuestionCommand as RelayCommand<object>).NotifyCanExecuteChanged();
 
 
         //Ny fråga
-        _currentQuestion = new Question("TEST", new string[]{"1", "2", "3", "4"}, 0);
+        /*_currentQuestion = new Question("Test", "", "", new[] { "", "", "", "" }, -1);
         WrongAnswer = -1;
-        RightAnswer = -1;
+        RightAnswer = -1;*/
         RenderQuestionAsync();
     }
 
@@ -62,23 +106,41 @@ public class PlayQuizViewModel : ObservableObject
     {
         if (firstQuestion)
         {
-            Question temp = _currentQuestion;
-            _currentQuestion = new Question("Lycka till");
-            OnPropertyChanged(nameof(RightAnswer));
-            OnPropertyChanged(nameof(WrongAnswer));
-            OnPropertyChanged(nameof(CurrentQuestion));
-            await Task.Delay(2000);
+            RightAnswer = -2;
+            CurrentQuestion = new Question("Lycka till", "", "",  new []{"", "", "", ""}, -1);
+            AnswerQuestionCommand.NotifyCanExecuteChanged();
 
-            _currentQuestion = temp;
+            await Task.Delay(1000);
         }
-        else if (CurrentQuestion == null) // Sista frågan
+
+        await Task.Delay(1000);
+        RightAnswer = -1;
+        WrongAnswer = -1;
+        ImageFilePath = "";
+        CurrentQuestion = _quiz.GetRandomQuestion();
+
+        if (CurrentQuestion == null) // Sista frågan
         {
 
-            return;
+            CurrentQuestion = new Question($"Bra Jobbat!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
+            await Task.Delay(2000);
+            _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
         }
+        else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFileName))
+        {
+            RightAnswer = -2;
+            AnswerQuestionCommand.NotifyCanExecuteChanged();
+            await Task.Delay(2000);
+            ImageFilePath = CurrentQuestion.ImageFileName;
+
+            RightAnswer = -1;
+            WrongAnswer = -1;
+
+        }
+
+        AnswerQuestionCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(RightAnswer));
         OnPropertyChanged(nameof(WrongAnswer));
-        OnPropertyChanged(nameof(CurrentQuestion));
     }
 
 

@@ -39,6 +39,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl Background="CornflowerBlue">
+        <!--  QUIZ TAB  -->
         <TabItem Background="CornflowerBlue" Header="Quiz">
 
             <Grid>
@@ -62,7 +63,7 @@
                         Grid.Column="1"
                         FontSize="16"
                         FontWeight="Bold"
-                        ItemsSource="{Binding QuizCollection}"
+                        ItemsSource="{Binding Quizzes}"
                         SelectedItem="{Binding SelectedQuiz}"
                         SelectionMode="Single">
 
@@ -82,7 +83,82 @@
                                 <GridViewColumn Width="140" Header="Antal frågor">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding QuestionCount}" TextAlignment="Center" />
+                                            <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                </Border>
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Padding="10,6"
+                        Command="{Binding PlayQuizCommand}"
+                        Content="Spela Quiz"
+                        Style="{StaticResource PlayQuizButton}" />
+                </StackPanel>
+                <StackPanel
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+                    <Button
+                        Padding="10,6"
+                        Command="{Binding CreateOrEditCommand}"
+                        Content="{Binding CreateOrEditQuizButtonText, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{DynamicResource GreenButtonMedium}" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Background="CornflowerBlue" Header="Kategorier">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="16*" />
+                    <RowDefinition Height="1.3*" />
+                    <RowDefinition Height="0.7*" />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    CornerRadius="10">
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        ItemsSource="{Binding Categories}"
+                        SelectionMode="Multiple">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="540" Header="Kategori">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                Text="{Binding Title}"
+                                                TextAlignment="Left" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+
+                                </GridViewColumn>
+                                <GridViewColumn Width="140" Header="Antal frågor">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -115,6 +191,5 @@
                 </StackPanel>
             </Grid>
         </TabItem>
-        <TabItem Header="Ämnen" />
     </TabControl>
 </UserControl>
