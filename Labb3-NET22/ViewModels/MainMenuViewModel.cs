@@ -35,6 +35,8 @@ public class MainMenuViewModel : ObservableObject
 
     public String CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
 
+    public int CategoryQuestionAmount { get; set; } = 10;
+
     private NavigationStore _navigationStore;
     public IEnumerable<Quiz> Quizzes => _quizStore.Quizzes;
     public IEnumerable<Category> Categories => _quizStore.Categories;

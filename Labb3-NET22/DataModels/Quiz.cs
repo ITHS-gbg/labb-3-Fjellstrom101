@@ -46,7 +46,6 @@ public class Quiz
         var randomQuestion = _questions.ElementAtOrDefault(index);
 
         if((_questions as List<Question>).Count!= 0) RemoveQuestion(index);
-
         return randomQuestion;
     }
 

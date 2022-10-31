@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +26,7 @@ public class QuizStore
 
     public QuizStore()
     {
+        InitAppFoldersAndFiles();
         LoadAllQuizzesAsync();
     }
 
@@ -118,8 +120,6 @@ public class QuizStore
     }
     public async void LoadAllQuizzesAsync()
     {
-        if (!Directory.Exists(_appFolder)) Directory.CreateDirectory(_appFolder);
-
 
         string[] directories = Directory.GetDirectories(_appFolder, "*", SearchOption.TopDirectoryOnly);
 
@@ -255,17 +255,20 @@ public class QuizStore
 
         _categories.First(a => a.Title.Equals(question.Category)).AddQuestion(question);
     }
-    //Kanske?
-    public void ImportQuizFromFileAsync()
+
+    public void InitAppFoldersAndFiles()
     {
-        //TODO Om tid finns
-        throw new NotImplementedException();
-    }
-    //Kanske?
-    public void ExportQuizToFileAsync()
-    {
-        //TODO Om tid finns
-        throw new NotImplementedException();
+
+        if (!Directory.Exists(_appFolder))
+        {
+            Directory.CreateDirectory(_appFolder);
+        }
+
+        if (!File.Exists(Path.Combine(_appFolder, "noimage.jpg")))
+        {
+            string? currentDirr = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            File.Move(Path.Combine(currentDirr, "Files\\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
+        }
     }
     private bool FileIsInsideFolder(DirectoryInfo file, DirectoryInfo folder)
     {

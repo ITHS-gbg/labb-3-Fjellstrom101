@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -15,27 +16,28 @@ public class PlayQuizViewModel : ObservableObject
     private Question _currentQuestion; // Inte planerad
     private NavigationStore _navigationStore;
     private QuizStore _quizStore;
-    private int _wrongAnswer = -1;
-    private int _rightAnswer = -1;
+    private int _incorrectAnswer = -1;
+    private int _correctAnswer = -1;
     private int[] score = new[] { 0, 0 };
     private string _imageFilePath = "";
+    private bool _showImageView = false;
 
 
-    public int WrongAnswer
+    public int IncorrectAnswer
     {
-        get => _wrongAnswer;
+        get => _incorrectAnswer;
         set
         {
-            SetProperty(ref _wrongAnswer, value);
+            SetProperty(ref _incorrectAnswer, value);
         }
     }
 
-    public int RightAnswer
+    public int CorrectAnswer
     {
-        get => _rightAnswer;
+        get => _correctAnswer;
         set
         {
-            SetProperty(ref _rightAnswer, value);
+            SetProperty(ref _correctAnswer, value);
         }
     }
 
@@ -56,13 +58,21 @@ public class PlayQuizViewModel : ObservableObject
             SetProperty(ref _imageFilePath, value);
         }
     }
+    public bool ShowImageView
+    {
+        get => _showImageView;
+        set
+        {
+            SetProperty(ref _showImageView, value);
+        }
+    }
     public IRelayCommand AnswerQuestionCommand { get; }
     public PlayQuizViewModel(NavigationStore navigationStore, QuizStore quizStore, Quiz quiz)
     {
         _navigationStore = navigationStore;
         _quiz = quiz;
         _quizStore = quizStore;
-
+        score[1] = _quiz.Questions.Count();
         AnswerQuestionCommand = new RelayCommand<object>(AnswerQuestionCommandHandler, AnswerQuestionCommandCanExecute);
         RenderQuestionAsync(true);
     }
@@ -70,21 +80,20 @@ public class PlayQuizViewModel : ObservableObject
     private void AnswerQuestionCommandHandler(object parameter)
     {
 
-        RightAnswer = CurrentQuestion.CorrectAnswer;
-        score[1]++;
+        CorrectAnswer = CurrentQuestion.CorrectAnswer;
 
-        if (Int32.Parse(parameter.ToString()) != RightAnswer)
+        if (Int32.Parse(parameter.ToString()) != CorrectAnswer)
         {
-            WrongAnswer = Int32.Parse(parameter.ToString());
+            IncorrectAnswer = Int32.Parse(parameter.ToString());
         }
         else
         {
             score[0]++;
-            WrongAnswer = -1;
+            IncorrectAnswer = -1;
         }
 
-        OnPropertyChanged(nameof(RightAnswer));
-        OnPropertyChanged(nameof(WrongAnswer));
+        OnPropertyChanged(nameof(CorrectAnswer));
+        OnPropertyChanged(nameof(IncorrectAnswer));
         
         //Måste man?
         //(AnswerQuestionCommand as RelayCommand<object>).NotifyCanExecuteChanged();
@@ -92,55 +101,70 @@ public class PlayQuizViewModel : ObservableObject
 
         //Ny fråga
         /*_currentQuestion = new Question("Test", "", "", new[] { "", "", "", "" }, -1);
-        WrongAnswer = -1;
-        RightAnswer = -1;*/
+        IncorrectAnswer = -1;
+        CorrectAnswer = -1;*/
         RenderQuestionAsync();
     }
 
     private bool AnswerQuestionCommandCanExecute(object parameter)
     {
-        return WrongAnswer == -1 && RightAnswer == -1;
+        return IncorrectAnswer == -1 && CorrectAnswer == -1;
     }
 
     private async void RenderQuestionAsync(bool firstQuestion = false)
     {
+        ShowImageView = false;
+
         if (firstQuestion)
         {
-            RightAnswer = -2;
-            CurrentQuestion = new Question("Lycka till", "", "",  new []{"", "", "", ""}, -1);
+            CorrectAnswer = -2;
+            CurrentQuestion = new Question("Lycka till!", "", "",  new []{"", "", "", ""}, -1);
             AnswerQuestionCommand.NotifyCanExecuteChanged();
 
-            await Task.Delay(1000);
+            await Task.Delay(500);
+        }
+        else
+        {
+            ImageFilePath = "";
+            if (IncorrectAnswer == -1)
+            {
+                CurrentQuestion = new Question($"Rätt svar!\n Du har svarat rätt på {score[0]} av {score[1]} frågor!", "", "", CurrentQuestion.Answers, -1);
+            }
+            else
+            {
+                CurrentQuestion = new Question($"Fel svar!\n Du har svarat rätt på {score[0]} av {score[1]} frågor!", "", "", CurrentQuestion.Answers, -1);
+            }
         }
 
-        await Task.Delay(1000);
-        RightAnswer = -1;
-        WrongAnswer = -1;
+        await Task.Delay(1500);
+        CorrectAnswer = -1;
+        IncorrectAnswer = -1;
         ImageFilePath = "";
         CurrentQuestion = _quiz.GetRandomQuestion();
 
         if (CurrentQuestion == null) // Sista frågan
         {
 
-            CurrentQuestion = new Question($"Bra Jobbat!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
+            if (score[0] > score[1] / 2)
+            {
+                CurrentQuestion = new Question($"Bra jobbat!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
+            }
+            else
+            {
+                CurrentQuestion = new Question($"Bättre lycka nästa gång!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
+            }
             await Task.Delay(2000);
             _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
         }
         else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFileName))
         {
-            RightAnswer = -2;
-            AnswerQuestionCommand.NotifyCanExecuteChanged();
-            await Task.Delay(2000);
+            ShowImageView = true;
             ImageFilePath = CurrentQuestion.ImageFileName;
-
-            RightAnswer = -1;
-            WrongAnswer = -1;
-
         }
 
         AnswerQuestionCommand.NotifyCanExecuteChanged();
-        OnPropertyChanged(nameof(RightAnswer));
-        OnPropertyChanged(nameof(WrongAnswer));
+        OnPropertyChanged(nameof(CorrectAnswer));
+        OnPropertyChanged(nameof(IncorrectAnswer));
     }
 
 

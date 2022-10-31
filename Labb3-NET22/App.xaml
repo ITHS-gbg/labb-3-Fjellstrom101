@@ -38,7 +38,14 @@
             <Setter Property="Padding" Value="10,6" />
             <Setter Property="Margin" Value="2" />
         </Style>
-
+        <Style
+            x:Key="GreenButtonSmall"
+            BasedOn="{StaticResource GreenButtonBase}"
+            TargetType="Button">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="Margin" Value="6" />
+        </Style>
         <Style x:Key="RedButtonBase" TargetType="Button">
 
             <Setter Property="Foreground" Value="White" />
@@ -79,7 +86,48 @@
             TargetType="Button">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Padding" Value="6,2" />
-            <Setter Property="Margin" Value="2" />
+            <Setter Property="Margin" Value="6" />
+        </Style>
+        <Style x:Key="RoundCorners">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style
+            x:Key="ImageElement"
+            BasedOn="{StaticResource RoundCorners}"
+            TargetType="Border">
+            <Setter Property="Margin" Value="6" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="6,0,6,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style BasedOn="{StaticResource RoundCorners}" TargetType="TextBox">
+            <Setter Property="Margin" Value="6,0,6,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="6,0" />
+        </Style>
+        <Style
+            x:Key="AnswerTextBox"
+            BasedOn="{StaticResource RoundCorners}"
+            TargetType="TextBox">
+            <Setter Property="Margin" Value="6,2,6,2" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="6,0" />
+        </Style>
+        <Style BasedOn="{StaticResource RoundCorners}" TargetType="ListView">
+            <Setter Property="Margin" Value="6,0,6,0" />
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="10,0,10,0" />
         </Style>
     </Application.Resources>
 </Application>
