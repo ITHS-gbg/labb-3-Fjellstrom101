@@ -29,6 +29,8 @@ public class EditQuizViewModel : ObservableObject
     private Question? _selectedQuestion;
     private string _saveQuestionButtonText = "Spara";
     private BitmapImage _questionImage = new BitmapImage();
+    private readonly string _defaultImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "SuperDuperQuizzenNo1\\noimage.jpg");
 
 
     public ObservableCollection<Question> Questions { get; set; } = new ObservableCollection<Question>();
@@ -48,6 +50,7 @@ public class EditQuizViewModel : ObservableObject
         get => _selectedQuestion;
         set
         {
+
             SetProperty(ref _selectedQuestion, value);
             DeleteQuestionCommand.NotifyCanExecuteChanged();
 
@@ -57,6 +60,8 @@ public class EditQuizViewModel : ObservableObject
                 Category = value.Category;
                 ImageFileName = value.ImageFileName;
                 CorrectAnswer = value.CorrectAnswer;
+                OnPropertyChanged(nameof(CorrectAnswer));
+
                 Answers[0] = value.Answers[0];
                 Answers[1] = value.Answers[1];
                 Answers[2] = value.Answers[2];
@@ -94,7 +99,7 @@ public class EditQuizViewModel : ObservableObject
         get => _imageFileName;
         set
         {
-            var uriSource = new Uri("C:\\Users\\Linus\\Downloads\\NoImage.jpg");
+            var uriSource = new Uri(_defaultImagePath);
 
             if (!string.IsNullOrEmpty(value))
             {
@@ -163,7 +168,7 @@ public class EditQuizViewModel : ObservableObject
         _navigationStore = navigationStore;
         _quiz = quiz;
 
-        var uriSource = new Uri("C:\\Users\\Linus\\Downloads\\NoImage.jpg");
+        var uriSource = new Uri(_defaultImagePath);
         QuestionImage = new BitmapImage();
         QuestionImage.BeginInit();
         QuestionImage.CacheOption = BitmapCacheOption.OnLoad;
@@ -237,7 +242,7 @@ public class EditQuizViewModel : ObservableObject
     }
     public bool DeleteImageCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(ImageFileName);
+        return !string.IsNullOrEmpty(_imageFileName);
     }
     public void AddQuestionCommandExecute()
     {

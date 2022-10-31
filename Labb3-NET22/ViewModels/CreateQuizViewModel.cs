@@ -26,6 +26,8 @@ public class CreateQuizViewModel : ObservableObject
     private string _category = "";
     private Question? _selectedQuestion;
     private string _saveQuestionButtonText = "Spara";
+    private readonly string _defaultImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "SuperDuperQuizzenNo1\\noimage.jpg");
 
 
     public ObservableCollection<Question> Questions { get; set; } = new ObservableCollection<Question>();
@@ -53,6 +55,7 @@ public class CreateQuizViewModel : ObservableObject
                 Statement = value.Statement;
                 Category = value.Category;
                 ImageFileName = value.ImageFileName;
+                CorrectAnswer = value.CorrectAnswer;
                 Answers[0] = value.Answers[0];
                 Answers[1] = value.Answers[1];
                 Answers[2] = value.Answers[2];
@@ -87,7 +90,11 @@ public class CreateQuizViewModel : ObservableObject
     }
     public string ImageFileName
     {
-        get => _imageFileName;
+        get
+        {
+            if (string.IsNullOrEmpty(_imageFileName)) return _defaultImagePath;
+            return _imageFileName;
+        }
         set
         {
             SetProperty(ref _imageFileName, value);
@@ -156,7 +163,7 @@ public class CreateQuizViewModel : ObservableObject
         if (QuestionIsSelected && 
             (!SelectedQuestion.Statement.Equals(Statement) ||
              !SelectedQuestion.Category.Equals(Category) ||
-             !SelectedQuestion.ImageFileName.Equals(ImageFileName) ||
+             !SelectedQuestion.ImageFileName.Equals(_imageFileName) ||
              !SelectedQuestion.Answers.Equals(Answers) ||
              SelectedQuestion.CorrectAnswer != CorrectAnswer))
         {
@@ -193,18 +200,18 @@ public class CreateQuizViewModel : ObservableObject
     }
     public bool DeleteImageCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(ImageFileName);
+        return !string.IsNullOrEmpty(_imageFileName);
     }
     public void AddQuestionCommandExecute()
     {
         if (QuestionIsSelected)
         {
             Questions[Questions.IndexOf(SelectedQuestion)] = 
-                new Question(Statement, Category, ImageFileName, Answers.ToArray(), CorrectAnswer);
+                new Question(Statement, Category, _imageFileName, Answers.ToArray(), CorrectAnswer);
         }
         else
         {
-            Questions.Add(new Question(Statement, Category, ImageFileName, Answers.ToArray(), CorrectAnswer));
+            Questions.Add(new Question(Statement, Category, _imageFileName, Answers.ToArray(), CorrectAnswer));
         }
         ClearQuestionFields();
     }

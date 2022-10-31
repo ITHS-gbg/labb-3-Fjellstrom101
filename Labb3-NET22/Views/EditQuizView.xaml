@@ -146,11 +146,11 @@
                 Grid.Column="0"
                 Command="{Binding AddQuestionCommand}"
                 Content="{Binding SaveQuestionButtonText, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource GreenButton}" />
+                Style="{StaticResource GreenButtonSmall}" />
             <Button
                 Grid.Column="1"
                 Command="{Binding DeleteQuestionCommand}"
-                Style="{StaticResource RedButton}">
+                Style="{StaticResource RedButtonSmall}">
                 Ta Bort
             </Button>
         </Grid>
@@ -211,7 +211,7 @@
                 CornerRadius="6"
                 Style="{StaticResource ImageElement}">
                 <Border.Background>
-                    <ImageBrush ImageSource="{Binding QuestionImage, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform"/>
+                    <ImageBrush ImageSource="{Binding QuestionImage, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" />
                 </Border.Background>
             </Border>
         </Grid>
@@ -280,22 +280,22 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Label Height="{Binding ActualHeight, ElementName=QuestionsLabel}" />
-            <RadioButton
+            <CheckBox
                 Grid.Row="1"
                 VerticalContentAlignment="Center"
-                IsChecked="{Binding CorrectAnswer, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=0}" />
-            <RadioButton
+                IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=0}" />
+            <CheckBox
                 Grid.Row="2"
                 VerticalContentAlignment="Center"
-                IsChecked="{Binding CorrectAnswer, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=1}" />
-            <RadioButton
+                IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=1}" />
+            <CheckBox
                 Grid.Row="3"
                 VerticalContentAlignment="Center"
-                IsChecked="{Binding CorrectAnswer, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=2}" />
-            <RadioButton
+                IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=2}" />
+            <CheckBox
                 Grid.Row="4"
                 VerticalContentAlignment="Center"
-                IsChecked="{Binding CorrectAnswer, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=3}" />
+                IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=3}" />
         </Grid>
         <Grid
             Grid.Row="7"
