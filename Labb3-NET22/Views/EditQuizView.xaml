@@ -62,6 +62,7 @@
             <Label>Frågor:</Label>
             <ListView
                 Grid.Row="1"
+                FontWeight="Bold"
                 ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedQuestion}">
                 <ListView.ItemTemplate>

@@ -38,170 +38,188 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl Background="CornflowerBlue">
-        <!--  QUIZ TAB  -->
-        <TabItem Background="CornflowerBlue" Header="Quiz">
+    <Grid>
+        <UniformGrid Margin="2,0" Columns="2">
+            <FrameworkElement x:Name="TabSize" />
+        </UniformGrid>
+        <TabControl Background="CornflowerBlue" Foreground="Red">
+            <!--  QUIZ TAB  -->
+            <TabItem
+                Width="{Binding ElementName=TabSize, Path=ActualWidth}"
+                Background="CornflowerBlue"
+                Header="Quiz">
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="16*" />
-                    <RowDefinition Height="1.3*" />
-                    <RowDefinition Height="0.7*" />
-                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="16*" />
+                        <RowDefinition Height="1.3*" />
+                        <RowDefinition Height="0.7*" />
+                    </Grid.RowDefinitions>
 
-                <ListView
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    ItemsSource="{Binding Quizzes}"
-                    SelectedItem="{Binding SelectedQuiz}"
-                    SelectionMode="Single">
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        ItemsSource="{Binding Quizzes}"
+                        SelectedItem="{Binding SelectedQuiz}"
+                        SelectionMode="Single">
 
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Width="540" Header="Quiz Titel">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            HorizontalAlignment="Left"
-                                            Text="{Binding Title}"
-                                            TextAlignment="Left" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="540" Header="Quiz Titel">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                Text="{Binding Title}"
+                                                TextAlignment="Left" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
 
-                            </GridViewColumn>
-                            <GridViewColumn Width="140" Header="Antal frågor">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <Button
-                        Padding="10,6"
-                        Command="{Binding PlayQuizCommand}"
-                        Content="Spela Quiz"
-                        Style="{StaticResource PlayQuizButton}" />
-                </StackPanel>
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal">
-                    <Button
-                        Padding="10,6"
-                        Command="{Binding CreateOrEditCommand}"
-                        Content="{Binding CreateOrEditQuizButtonText, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{DynamicResource GreenButtonMedium}" />
-                    <Button
-                        Command="{Binding ImportQuizCommand}"
-                        Content="&#xED25;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        FontWeight="Light"
-                        Style="{DynamicResource GreenButtonMedium}"
-                        ToolTip="Importera Quiz" />
-                    <Button
-                        Command="{Binding ExportQuizCommand}"
-                        Content="&#xE8E5;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        FontWeight="Light"
-                        Style="{DynamicResource GreenButtonMedium}"
-                        ToolTip="Exportera Quiz" />
-                    <Button
-                        Command="{Binding RemoveQuizCommand}"
-                        Content="&#xE74D;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        FontWeight="Light"
-                        Style="{DynamicResource RedButtonMedium}"
-                        ToolTip="Exportera Quiz" />
-                </StackPanel>
-            </Grid>
-        </TabItem>
-        <TabItem Background="CornflowerBlue" Header="Kategorier">
+                                </GridViewColumn>
+                                <GridViewColumn Width="140" Header="Antal frågor">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            Padding="10,6"
+                            Command="{Binding PlayQuizCommand}"
+                            Content="Spela Quiz"
+                            Style="{StaticResource PlayQuizButton}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <Button
+                            Padding="10,6"
+                            Command="{Binding CreateOrEditCommand}"
+                            Content="{Binding CreateOrEditQuizButtonText, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{DynamicResource GreenButtonMedium}" />
+                        <Button
+                            Command="{Binding ImportQuizCommand}"
+                            Content="&#xED25;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="20"
+                            FontWeight="Light"
+                            Style="{DynamicResource GreenButtonMedium}"
+                            ToolTip="Importera Quiz" />
+                        <Button
+                            Command="{Binding ExportQuizCommand}"
+                            Content="&#xE8E5;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="20"
+                            FontWeight="Light"
+                            Style="{DynamicResource GreenButtonMedium}"
+                            ToolTip="Exportera Quiz" />
+                        <Button
+                            Command="{Binding RemoveQuizCommand}"
+                            Content="&#xE74D;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="20"
+                            FontWeight="Light"
+                            Style="{DynamicResource RedButtonMedium}"
+                            ToolTip="Exportera Quiz" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <!--  Kategorier Tabb  -->
+            <TabItem
+                Width="{Binding ElementName=TabSize, Path=ActualWidth}"
+                Background="CornflowerBlue"
+                Header="Kategorier">
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="16*" />
-                    <RowDefinition Height="1.3*" />
-                    <RowDefinition Height="0.7*" />
-                </Grid.RowDefinitions>
-                <ListView
-                    Name="CategoriesListView"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    ItemsSource="{Binding Categories}"
-                    SelectedIndex="{Binding SelectedCategoryIndex}"
-                    SelectionMode="Multiple">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="16*" />
+                        <RowDefinition Height="1.3*" />
+                        <RowDefinition Height="0.7*" />
+                    </Grid.RowDefinitions>
+                    <ListView
+                        Name="CategoriesListView"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        ItemsSource="{Binding Categories}"
+                        SelectedIndex="{Binding SelectedCategoryIndex}"
+                        SelectionMode="Multiple">
 
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Width="540" Header="Kategori">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            HorizontalAlignment="Left"
-                                            Text="{Binding Title}"
-                                            TextAlignment="Left" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="540" Header="Kategori">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                HorizontalAlignment="Left"
+                                                Text="{Binding Title}"
+                                                TextAlignment="Left" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
 
-                            </GridViewColumn>
-                            <GridViewColumn Width="140" Header="Antal frågor">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <Label HorizontalAlignment="Right" VerticalAlignment="Center">Max antal frågor:</Label>
-                    <TextBox Width="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="2" Text="{Binding CategoryQuestionAmount}"/>
-                    <Button
-                        Padding="10,6"
-                        Command="{Binding GenerateQuizCommand}"
-                        CommandParameter="{Binding SelectedItems, Mode=OneWay, ElementName=CategoriesListView}"
-                        Content="Spela Quiz"
-                        Style="{StaticResource PlayQuizButton}" />
-                </StackPanel>
-                <StackPanel
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal" />
-            </Grid>
-        </TabItem>
-    </TabControl>
+                                </GridViewColumn>
+                                <GridViewColumn Width="140" Header="Antal frågor">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Questions.Count}" TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Label HorizontalAlignment="Right" VerticalAlignment="Center">Max antal frågor:</Label>
+                        <TextBox
+                            Width="40"
+                            Margin="2"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="14"
+                            Text="{Binding CategoryQuestionAmount}" />
+                        <Button
+                            Padding="10,6"
+                            Command="{Binding GenerateQuizCommand}"
+                            CommandParameter="{Binding SelectedItems, Mode=OneWay, ElementName=CategoriesListView}"
+                            Content="Spela Quiz"
+                            Style="{StaticResource PlayQuizButton}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </UserControl>

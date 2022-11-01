@@ -156,10 +156,10 @@ public class PlayQuizViewModel : ObservableObject
             await Task.Delay(2000);
             _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
         }
-        else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFileName))
+        else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFilePath))
         {
             ShowImageView = true;
-            ImageFilePath = CurrentQuestion.ImageFileName;
+            ImageFilePath = CurrentQuestion.ImageFilePath;
         }
 
         AnswerQuestionCommand.NotifyCanExecuteChanged();

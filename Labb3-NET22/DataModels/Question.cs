@@ -5,15 +5,15 @@ public class Question
     public string Statement { get; }
     public string[] Answers { get; }
 
-    public string ImageFileName { get; set; }
+    public string ImageFilePath { get; set; }
     public string Category { get; }
     public int CorrectAnswer { get; }
 
-    public Question(string statement, string category, string imageFileName, string[] answers, int correctAnswer)
+    public Question(string statement, string category, string imageFilePath, string[] answers, int correctAnswer)
     {
         Statement = statement;
         Category = category;
-        ImageFileName = imageFileName;
+        ImageFilePath = imageFilePath;
         Answers = answers;
         CorrectAnswer = correctAnswer;
     }

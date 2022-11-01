@@ -14,7 +14,7 @@ public class Quiz
 
     public IEnumerable<Question> Questions => _questions;
     public string Title => _title;
-    public string FolderName { get; set; }
+    public string FolderPath { get; set; }
 
     private Random _random = new();
 
@@ -31,10 +31,10 @@ public class Quiz
         (_questions as List<Question>).AddRange(questions);
     }
     [JsonConstructor]
-    public Quiz(string title, IEnumerable<Question> questions, string folderName)
+    public Quiz(string title, IEnumerable<Question> questions, string folderPath)
     {
         _title = title;
-        FolderName = folderName;
+        FolderPath = folderPath;
 
         _questions = new List<Question>();
         (_questions as List<Question>).AddRange(questions);
@@ -52,6 +52,12 @@ public class Quiz
     public void AddQuestion(string statement, int correctAnswer, params string[] answers)
     {
         (_questions as List<Question>)?.Add(new Question(statement, "Vanlig allmän fråga", "", answers, correctAnswer));
+    }
+    public void AddQuestion(string statement, int correctAnswer, string category, string imageFilePath, params string[] answers)
+    {
+        var tempQuestion = new Question(statement, category, "", answers, correctAnswer);
+        tempQuestion.ImageFilePath = imageFilePath;
+        (_questions as List<Question>)?.Add(tempQuestion);
     }
 
     public void RemoveQuestion(int index)

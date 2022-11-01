@@ -83,7 +83,7 @@ public class MainMenuViewModel : ObservableObject
     public void GenerateQuizCommandExecute(object param)
     {
         System.Collections.IList items = (System.Collections.IList)param;
-        Quiz generatedQuiz = _quizStore.GenerateQuizByCategories(items.Cast<Category>().ToArray(),100);
+        Quiz generatedQuiz = _quizStore.GenerateQuizByCategories(items.Cast<Category>().ToArray(),CategoryQuestionAmount);
 
         _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizStore, generatedQuiz);
     }
@@ -109,7 +109,7 @@ public class MainMenuViewModel : ObservableObject
 
         if (saveFileDialog1.FileName != "")
         {
-            _quizStore.ExportQuiz(SelectedQuiz, saveFileDialog1.FileName);
+            _quizStore.ExportQuizAsync(SelectedQuiz, saveFileDialog1.FileName);
         }
     }
     private void ImportQuizCommandExecute()
@@ -121,7 +121,7 @@ public class MainMenuViewModel : ObservableObject
 
         if (openFileDialog.FileName != "")
         {
-            _quizStore.ImportQuiz(openFileDialog.FileName);
+            _quizStore.ImportQuizAsync(openFileDialog.FileName);
         }
     }
 }

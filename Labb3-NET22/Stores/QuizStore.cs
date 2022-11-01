@@ -32,9 +32,9 @@ public class QuizStore
 
     public void AddQuiz(Quiz quiz)
     {
-        if (string.IsNullOrEmpty(quiz.FolderName))
+        if (string.IsNullOrEmpty(quiz.FolderPath))
         {
-            quiz.FolderName = GenerateFolderName(quiz.Title);
+            quiz.FolderPath = GenerateFolderName(quiz.Title);
         }
 
         SaveQuizAsync(quiz);
@@ -57,12 +57,21 @@ public class QuizStore
 
         foreach (var question in quiz.Questions)
         {
-            Categories.First(a => a.Title.Equals(question.Category))?.RemoveQuestion(question);
+            var category = Categories.FirstOrDefault(a => a.Title.Equals(question.Category));
+
+            if (category == null) continue;
+
+            category.RemoveQuestion(question);
+
+            if (!(category.Questions.Any()))
+            {
+                (Categories as ObservableCollection<Category>).Remove(category);
+            }
         }
 
         if (removeFiles)
         {
-            Directory.Delete(quiz.FolderName, true);
+            Directory.Delete(quiz.FolderPath, true);
         }
     }
 
@@ -70,14 +79,14 @@ public class QuizStore
     {
         if (toBeReplaced.Title.Equals(replacement.Title))
         {
-            replacement.FolderName = toBeReplaced.FolderName;
+            replacement.FolderPath = toBeReplaced.FolderPath;
 
             var filesToBeRemoved =
-                toBeReplaced.Questions.Where(a => replacement.Questions.All(b => b.ImageFileName != a.ImageFileName && !string.IsNullOrEmpty(a.ImageFileName)));
+                toBeReplaced.Questions.Where(a => replacement.Questions.All(b => b.ImageFilePath != a.ImageFilePath && !string.IsNullOrEmpty(a.ImageFilePath)));
 
             foreach (var question in filesToBeRemoved)
             {
-                File.Delete(question.ImageFileName);
+                File.Delete(question.ImageFilePath);
             }
 
             AddQuiz(replacement);
@@ -93,27 +102,27 @@ public class QuizStore
     {
         
 
-        if (!Directory.Exists(quiz.FolderName))
+        if (!Directory.Exists(quiz.FolderPath))
         {
-            Directory.CreateDirectory(quiz.FolderName);
+            Directory.CreateDirectory(quiz.FolderPath);
         }
 
         foreach (var question in quiz.Questions)
         {
-            if (!string.IsNullOrEmpty(question.ImageFileName) && 
-                !FileIsInsideFolder(new DirectoryInfo(question.ImageFileName), new DirectoryInfo(quiz.FolderName)))
+            if (!string.IsNullOrEmpty(question.ImageFilePath) && 
+                !FileIsInsideFolder(new DirectoryInfo(question.ImageFilePath), new DirectoryInfo(quiz.FolderPath)))
             {
-                string newImagePath = GenerateImagePath(quiz, question.ImageFileName);
+                string newImagePath = GenerateImagePath(quiz, question.ImageFilePath);
 
-                File.Copy(question.ImageFileName, newImagePath);
+                File.Copy(question.ImageFilePath, newImagePath);
 
-                question.ImageFileName = newImagePath;
+                question.ImageFilePath = newImagePath;
             }
         }
 
         string json = JsonSerializer.Serialize(quiz, new JsonSerializerOptions() { WriteIndented = true });
 
-        using (var writer = File.CreateText(Path.Combine(quiz.FolderName, "Quiz.json")))
+        using (var writer = File.CreateText(Path.Combine(quiz.FolderPath, "Quiz.json")))
         {
             await writer.WriteAsync(json);
         }
@@ -142,11 +151,11 @@ public class QuizStore
         }
     }
 
-    public async void ExportQuiz(Quiz quiz, string path)
+    public async void ExportQuizAsync(Quiz quiz, string path)
     {
-        await Task.Run(() => ZipFile.CreateFromDirectory(quiz.FolderName, path));
+        await Task.Run(() => ZipFile.CreateFromDirectory(quiz.FolderPath, path));
     }
-    public async void ImportQuiz(string path)
+    public async void ImportQuizAsync(string path)
     {
         string tempPath = Path.Combine(Path.GetTempPath(), "SuperDuperQuizzenNo1");
         await Task.Run(() => ZipFile.ExtractToDirectory(path, tempPath, true));
@@ -158,16 +167,16 @@ public class QuizStore
                 string json = await reader.ReadToEndAsync();
                 Quiz temp = JsonSerializer.Deserialize<Quiz>(json);
 
-                temp.FolderName = GenerateFolderName(temp.Title);
+                temp.FolderPath = GenerateFolderName(temp.Title);
 
 
                 foreach (var question in temp.Questions)
                 {
-                    if (!string.IsNullOrEmpty(question.ImageFileName))
+                    if (!string.IsNullOrEmpty(question.ImageFilePath))
                     {
-                        question.ImageFileName = Path.Combine(tempPath,
+                        question.ImageFilePath = Path.Combine(tempPath,
                             "Images",
-                            Path.GetFileName(question.ImageFileName));
+                            Path.GetFileName(question.ImageFilePath));
                     }
                 }
 
@@ -192,7 +201,7 @@ public class QuizStore
         {
             var randomQuestion = questions[random.Next(questions.Count)];
             questions.Remove(randomQuestion);
-            returnQuiz.AddQuestion(randomQuestion.Statement, randomQuestion.CorrectAnswer, randomQuestion.Answers);
+            returnQuiz.AddQuestion(randomQuestion.Statement, randomQuestion.CorrectAnswer, randomQuestion.Category, randomQuestion.ImageFilePath, randomQuestion.Answers);
         }
 
         return returnQuiz;
@@ -224,11 +233,11 @@ public class QuizStore
     public string GenerateImagePath(Quiz quiz, string imagePath)
     {
         var newFileName = String.Empty;
-        var directory = new DirectoryInfo(Path.Combine(quiz.FolderName, "Images"));
+        var directory = new DirectoryInfo(Path.Combine(quiz.FolderPath, "Images"));
 
         if (!directory.Exists)
         {
-            Directory.CreateDirectory(Path.Combine(quiz.FolderName, "Images"));
+            Directory.CreateDirectory(Path.Combine(quiz.FolderPath, "Images"));
         }
 
         if (directory.GetFiles().Length==0)
@@ -243,7 +252,7 @@ public class QuizStore
             newFileName = (int.Parse(Path.GetFileNameWithoutExtension(filename)) + 1) + Path.GetExtension(imagePath);
         }
 
-        return Path.Combine(quiz.FolderName, "Images", newFileName); ;
+        return Path.Combine(quiz.FolderPath, "Images", newFileName); ;
     }
 
     public void AddQuestionToCategory(Question question)
@@ -283,5 +292,21 @@ public class QuizStore
         }
 
         return FileIsInsideFolder(file.Parent, folder);
+    }
+
+    public IEnumerable<string> GetCategoriesStringList()
+    {
+        List<string> retList = new List<string>();
+
+        retList.AddRange(new []{
+            "Underhållning",
+            "Natur/Vetenskap",
+            "Kultur/Litteratur",
+            "Geografi",
+            "Historia",
+            "Sport/Fritid"
+        });
+
+        return _categories.Select(a => a.Title).Concat(retList).Distinct();
     }
 }

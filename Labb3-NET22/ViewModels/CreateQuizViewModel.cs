@@ -21,7 +21,7 @@ public class CreateQuizViewModel : ObservableObject
     private string _title = "";
     private string _statement = "";
     private ObservableCollection<string> _answers = new ObservableCollection<string>() {"", "", "", ""};
-    private string _imageFileName = "";
+    private string _imageFilePath = "";
     private int _correctAnswer;
     private string _category = "";
     private Question? _selectedQuestion;
@@ -54,7 +54,7 @@ public class CreateQuizViewModel : ObservableObject
             {
                 Statement = value.Statement;
                 Category = value.Category;
-                ImageFileName = value.ImageFileName;
+                ImageFilePath = value.ImageFilePath;
                 CorrectAnswer = value.CorrectAnswer;
                 Answers[0] = value.Answers[0];
                 Answers[1] = value.Answers[1];
@@ -88,16 +88,16 @@ public class CreateQuizViewModel : ObservableObject
             AddQuestionCommand.NotifyCanExecuteChanged();
         }
     }
-    public string ImageFileName
+    public string ImageFilePath
     {
         get
         {
-            if (string.IsNullOrEmpty(_imageFileName)) return _defaultImagePath;
-            return _imageFileName;
+            if (string.IsNullOrEmpty(_imageFilePath)) return _defaultImagePath;
+            return _imageFilePath;
         }
         set
         {
-            SetProperty(ref _imageFileName, value);
+            SetProperty(ref _imageFilePath, value);
             DeleteImageCommand.NotifyCanExecuteChanged();
         }
     }
@@ -150,21 +150,24 @@ public class CreateQuizViewModel : ObservableObject
         DeleteQuestionCommand = new RelayCommand(DeleteQuestionCommandExecute, DeleteQuestionCommandCanExecute);
 
         Answers.CollectionChanged += (sender, e) => { AddQuestionCommand.NotifyCanExecuteChanged(); SaveCommand.NotifyCanExecuteChanged();};
-        Categories.Add("Historia");
-        Categories.Add("Sport");
-        Categories.Add("Ekonomi");
-        Categories.Add("Data/IT");
-        Categories.Add("Geografi");
+
+        foreach (var categoryString in _quizStore.GetCategoriesStringList())
+        {
+            Categories.Add(categoryString);
+        }
     }
 
     public void SaveCommandExecute()
     {
         //Finns det ändringar som inte är sparade?
-        if (QuestionIsSelected && 
+        if (QuestionIsSelected &&
             (!SelectedQuestion.Statement.Equals(Statement) ||
              !SelectedQuestion.Category.Equals(Category) ||
-             !SelectedQuestion.ImageFileName.Equals(_imageFileName) ||
-             !SelectedQuestion.Answers.Equals(Answers) ||
+             !SelectedQuestion.ImageFilePath.Equals(ImageFilePath) ||
+             !SelectedQuestion.Answers[0].Equals(Answers[0]) ||
+             !SelectedQuestion.Answers[1].Equals(Answers[1]) ||
+             !SelectedQuestion.Answers[2].Equals(Answers[2]) ||
+             !SelectedQuestion.Answers[3].Equals(Answers[3]) ||
              SelectedQuestion.CorrectAnswer != CorrectAnswer))
         {
             if (MessageBox.Show("Du har gjort ändringar som inte har sparats. Vill du spara ändringarna?", "Osparade Ändringar", MessageBoxButton.YesNo, MessageBoxImage.Warning) ==
@@ -173,7 +176,7 @@ public class CreateQuizViewModel : ObservableObject
                 AddQuestionCommandExecute();
             }
         }
-        //Spara Quiz
+
         _quizStore.AddQuiz(new Quiz(Title, Questions));
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
     }
@@ -192,27 +195,33 @@ public class CreateQuizViewModel : ObservableObject
         openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
         if (openFileDialog.ShowDialog() == true)
-            ImageFileName = openFileDialog.FileName;
+            ImageFilePath = openFileDialog.FileName;
     }
     public void DeleteImageCommandExecute()
     {
-        ImageFileName = string.Empty;
+        ImageFilePath = string.Empty;
     }
     public bool DeleteImageCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(_imageFileName);
+        return !string.IsNullOrEmpty(_imageFilePath);
     }
     public void AddQuestionCommandExecute()
     {
         if (QuestionIsSelected)
         {
             Questions[Questions.IndexOf(SelectedQuestion)] = 
-                new Question(Statement, Category, _imageFileName, Answers.ToArray(), CorrectAnswer);
+                new Question(Statement, Category, _imageFilePath, Answers.ToArray(), CorrectAnswer);
         }
         else
         {
-            Questions.Add(new Question(Statement, Category, _imageFileName, Answers.ToArray(), CorrectAnswer));
+            Questions.Add(new Question(Statement, Category, _imageFilePath, Answers.ToArray(), CorrectAnswer));
         }
+
+        if (!Categories.Contains(Category))
+        {
+            Categories.Add(Category);
+        }
+
         ClearQuestionFields();
     }
     public bool AddQuestionCommandCanExecute()
@@ -237,7 +246,7 @@ public class CreateQuizViewModel : ObservableObject
     {
         Statement = "";
         Category = "";
-        ImageFileName = "";
+        ImageFilePath = "";
         Answers[0] = "";
         Answers[1] = "";
         Answers[2] = "";

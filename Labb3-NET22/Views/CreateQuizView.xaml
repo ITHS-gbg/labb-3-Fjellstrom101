@@ -64,6 +64,7 @@
             <Label>Frågor:</Label>
             <ListView
                 Grid.Row="1"
+                FontWeight="Bold"
                 ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedQuestion}">
                 <ListView.ItemTemplate>
@@ -151,7 +152,7 @@
                 CornerRadius="6"
                 Style="{StaticResource ImageElement}">
                 <Border.Background>
-                    <ImageBrush ImageSource="{Binding ImageFileName, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" />
+                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" />
                 </Border.Background>
             </Border>
         </Grid>

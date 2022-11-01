@@ -23,7 +23,7 @@ public class EditQuizViewModel : ObservableObject
     private string _title = "";
     private string _statement = "";
     private ObservableCollection<string> _answers = new ObservableCollection<string>() { "", "", "", "" };
-    private string _imageFileName = "";
+    private string _imageFilePath = "";
     private int _correctAnswer;
     private string _category = "";
     private Question? _selectedQuestion;
@@ -58,7 +58,7 @@ public class EditQuizViewModel : ObservableObject
             {
                 Statement = value.Statement;
                 Category = value.Category;
-                ImageFileName = value.ImageFileName;
+                ImageFilePath = value.ImageFilePath;
                 CorrectAnswer = value.CorrectAnswer;
                 OnPropertyChanged(nameof(CorrectAnswer));
 
@@ -94,11 +94,12 @@ public class EditQuizViewModel : ObservableObject
             AddQuestionCommand.NotifyCanExecuteChanged();
         }
     }
-    public string ImageFileName
+    public string ImageFilePath
     {
-        get => _imageFileName;
+        get => _imageFilePath;
         set
         {
+            
             var uriSource = new Uri(_defaultImagePath);
 
             if (!string.IsNullOrEmpty(value))
@@ -112,8 +113,8 @@ public class EditQuizViewModel : ObservableObject
             _questionImage.UriSource = uriSource;
             _questionImage.EndInit();
             OnPropertyChanged(nameof(QuestionImage));
-
-            SetProperty(ref _imageFileName, value);
+            
+            SetProperty(ref _imageFilePath, value);
             DeleteImageCommand.NotifyCanExecuteChanged();
         }
     }
@@ -168,13 +169,6 @@ public class EditQuizViewModel : ObservableObject
         _navigationStore = navigationStore;
         _quiz = quiz;
 
-        var uriSource = new Uri(_defaultImagePath);
-        QuestionImage = new BitmapImage();
-        QuestionImage.BeginInit();
-        QuestionImage.CacheOption = BitmapCacheOption.OnLoad;
-        QuestionImage.UriSource = uriSource;
-        QuestionImage.EndInit();
-
 
         SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
         CancelCommand = new RelayCommand(CancelCommandExecute);
@@ -184,13 +178,10 @@ public class EditQuizViewModel : ObservableObject
         DeleteQuestionCommand = new RelayCommand(DeleteQuestionCommandExecute, DeleteQuestionCommandCanExecute);
 
         Answers.CollectionChanged += (sender, e) => { AddQuestionCommand.NotifyCanExecuteChanged(); SaveCommand.NotifyCanExecuteChanged(); };
-        Categories.Add("Historia");
-        Categories.Add("Sport");
-        Categories.Add("Ekonomi");
-        Categories.Add("Data/IT");
-        Categories.Add("Geografi");
 
         
+        ImageFilePath = string.Empty;
+
         Title = quiz.Title;
 
         foreach (var question in quiz.Questions)
@@ -205,8 +196,11 @@ public class EditQuizViewModel : ObservableObject
         if (QuestionIsSelected &&
             (!SelectedQuestion.Statement.Equals(Statement) ||
              !SelectedQuestion.Category.Equals(Category) ||
-             !SelectedQuestion.ImageFileName.Equals(ImageFileName) ||
-             !SelectedQuestion.Answers.Equals(Answers) ||
+             !SelectedQuestion.ImageFilePath.Equals(ImageFilePath) ||
+             !SelectedQuestion.Answers[0].Equals(Answers[0]) ||
+             !SelectedQuestion.Answers[1].Equals(Answers[1]) ||
+             !SelectedQuestion.Answers[2].Equals(Answers[2]) ||
+             !SelectedQuestion.Answers[3].Equals(Answers[3]) ||
              SelectedQuestion.CorrectAnswer != CorrectAnswer))
         {
             if (MessageBox.Show("Du har gjort ändringar som inte har sparats. Vill du spara ändringarna?", "Osparade Ändringar", MessageBoxButton.YesNo, MessageBoxImage.Warning) ==
@@ -215,7 +209,7 @@ public class EditQuizViewModel : ObservableObject
                 AddQuestionCommandExecute();
             }
         }
-        //Spara Quiz
+
         _quizStore.ReplaceQuiz(_quiz, new Quiz(Title, Questions));
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
     }
@@ -234,27 +228,33 @@ public class EditQuizViewModel : ObservableObject
         openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
         if (openFileDialog.ShowDialog() == true)
-            ImageFileName = openFileDialog.FileName;
+            ImageFilePath = openFileDialog.FileName;
     }
     public void DeleteImageCommandExecute()
     {
-        ImageFileName = string.Empty;
+        ImageFilePath = string.Empty;
     }
     public bool DeleteImageCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(_imageFileName);
+        return !string.IsNullOrEmpty(_imageFilePath);
     }
     public void AddQuestionCommandExecute()
     {
         if (QuestionIsSelected)
         {
             Questions[Questions.IndexOf(SelectedQuestion)] =
-                new Question(Statement, Category, ImageFileName, Answers.ToArray(), CorrectAnswer);
+                new Question(Statement, Category, ImageFilePath, Answers.ToArray(), CorrectAnswer);
         }
         else
         {
-            Questions.Add(new Question(Statement, Category, ImageFileName, Answers.ToArray(), CorrectAnswer));
+            Questions.Add(new Question(Statement, Category, ImageFilePath, Answers.ToArray(), CorrectAnswer));
         }
+
+        if (!Categories.Contains(Category))
+        {
+            Categories.Add(Category);
+        }
+
         ClearQuestionFields();
     }
     public bool AddQuestionCommandCanExecute()
@@ -279,11 +279,12 @@ public class EditQuizViewModel : ObservableObject
     {
         Statement = "";
         Category = "";
-        ImageFileName = "";
+        ImageFilePath = "";
         Answers[0] = "";
         Answers[1] = "";
         Answers[2] = "";
         Answers[3] = "";
     }
+
 
 }

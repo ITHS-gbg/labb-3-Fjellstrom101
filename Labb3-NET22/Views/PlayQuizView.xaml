@@ -196,14 +196,18 @@
                         </Style>
                     </Grid.Style>
                     <!--<Image Source="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" />-->
-                    <TextBlock
+                    <Border
                         Grid.Row="1"
                         Background="White"
-                        FontSize="20"
-                        FontWeight="Bold"
-                        Foreground="CornflowerBlue"
-                        Text="{Binding CurrentQuestion.Statement}"
-                        TextAlignment="Center" />
+                        CornerRadius="14">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Foreground="CornflowerBlue"
+                            Text="{Binding CurrentQuestion.Statement}"
+                            TextAlignment="Center" />
+                    </Border>
                 </Grid>
 
                 <TextBlock
