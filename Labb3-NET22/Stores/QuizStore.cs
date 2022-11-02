@@ -39,13 +39,13 @@ public class QuizStore
 
         SaveQuizAsync(quiz);
 
-        (_quizzes as ObservableCollection<Quiz>).Add(quiz);
+        (_quizzes as ObservableCollection<Quiz>)?.Add(quiz);
 
         foreach (var question in quiz.Questions)
         {
             if (!Categories.Any(a => a.Title.Equals(question.Category)))
             {
-                (Categories as ObservableCollection<Category>).Add(new Category(question.Category));
+                (Categories as ObservableCollection<Category>)?.Add(new Category(question.Category));
             }
 
             Categories.First(a => a.Title.Equals(question.Category))?.AddQuestion(question);
@@ -53,7 +53,7 @@ public class QuizStore
     }
     public void RemoveQuiz(Quiz quiz, bool removeFiles = false)
     {
-        (_quizzes as ObservableCollection<Quiz>).Remove(quiz);
+        (_quizzes as ObservableCollection<Quiz>)?.Remove(quiz);
 
         foreach (var question in quiz.Questions)
         {
@@ -65,11 +65,11 @@ public class QuizStore
 
             if (!(category.Questions.Any()))
             {
-                (Categories as ObservableCollection<Category>).Remove(category);
+                (Categories as ObservableCollection<Category>)?.Remove(category);
             }
         }
 
-        if (removeFiles)
+        if (removeFiles && !string.IsNullOrEmpty(quiz.FolderPath) && Directory.Exists(quiz.FolderPath))
         {
             Directory.Delete(quiz.FolderPath, true);
         }
@@ -139,9 +139,9 @@ public class QuizStore
                 using (var reader = new StreamReader(Path.Combine(directory, "Quiz.json")))
                 {
                     string json = await reader.ReadToEndAsync();
-                    Quiz temp = JsonSerializer.Deserialize<Quiz>(json);
+                    Quiz? temp = JsonSerializer.Deserialize<Quiz>(json);
 
-                    (_quizzes as ObservableCollection<Quiz>).Add(temp);
+                    (_quizzes as ObservableCollection<Quiz>)?.Add(temp);
                     foreach (var question in temp.Questions)
                     {
                         AddQuestionToCategory(question);
@@ -247,7 +247,7 @@ public class QuizStore
         else
         {
             var filename = directory.GetFiles()
-                .OrderBy(x => x.Name)
+                .OrderBy(a => Path.GetFileNameWithoutExtension(a.Name).Length).ThenBy(a => a.Name)
                 .Last().Name;
             newFileName = (int.Parse(Path.GetFileNameWithoutExtension(filename)) + 1) + Path.GetExtension(imagePath);
         }

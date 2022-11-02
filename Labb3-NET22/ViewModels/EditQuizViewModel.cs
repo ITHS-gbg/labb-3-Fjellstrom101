@@ -188,6 +188,11 @@ public class EditQuizViewModel : ObservableObject
         {
             Questions.Add(question);
         }
+
+        foreach (var categoryString in _quizStore.GetCategoriesStringList())
+        {
+            Categories.Add(categoryString);
+        }
     }
 
     public void SaveCommandExecute()

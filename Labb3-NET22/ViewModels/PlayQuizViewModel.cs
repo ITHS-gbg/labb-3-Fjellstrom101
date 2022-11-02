@@ -72,7 +72,7 @@ public class PlayQuizViewModel : ObservableObject
         _navigationStore = navigationStore;
         _quiz = quiz;
         _quizStore = quizStore;
-        score[1] = _quiz.Questions.Count();
+
         AnswerQuestionCommand = new RelayCommand<object>(AnswerQuestionCommandHandler, AnswerQuestionCommandCanExecute);
         RenderQuestionAsync(true);
     }
@@ -92,17 +92,11 @@ public class PlayQuizViewModel : ObservableObject
             IncorrectAnswer = -1;
         }
 
+        score[1]++;
+
         OnPropertyChanged(nameof(CorrectAnswer));
         OnPropertyChanged(nameof(IncorrectAnswer));
         
-        //Måste man?
-        //(AnswerQuestionCommand as RelayCommand<object>).NotifyCanExecuteChanged();
-
-
-        //Ny fråga
-        /*_currentQuestion = new Question("Test", "", "", new[] { "", "", "", "" }, -1);
-        IncorrectAnswer = -1;
-        CorrectAnswer = -1;*/
         RenderQuestionAsync();
     }
 
