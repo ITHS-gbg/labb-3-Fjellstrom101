@@ -13,8 +13,8 @@ namespace Labb3_NET22.ViewModels;
 
 public class MainMenuViewModel : ObservableObject
 {
-    private QuizStore _quizStore;
-    private Quiz _selectedQuiz; //Inte planerad
+    private readonly QuizStore _quizStore;
+    private Quiz _selectedQuiz; 
     private int _selectedCategoryIndex = -1;
     public Quiz SelectedQuiz
     {
@@ -33,11 +33,11 @@ public class MainMenuViewModel : ObservableObject
     }
 
 
-    public String CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
+    public string CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
 
     public int CategoryQuestionAmount { get; set; } = 10;
 
-    private NavigationStore _navigationStore;
+    private readonly NavigationStore _navigationStore;
     public IEnumerable<Quiz> Quizzes => _quizStore.Quizzes;
     public IEnumerable<Category> Categories => _quizStore.Categories;
 
@@ -62,11 +62,11 @@ public class MainMenuViewModel : ObservableObject
     {
         _quizStore = quizStore;
         _navigationStore = navigationStore;
-        PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, PlayQuizCommandCanExecute);
+        PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, QuizIsSelected);
         CreateOrEditCommand = new RelayCommand(CreateOrEditCommandExecute);
         GenerateQuizCommand = new RelayCommand<object>((param) => { GenerateQuizCommandExecute(param); }, GenerateQuizCommandCanExecute);
-        RemoveQuizCommand = new RelayCommand(DeleteQuizCommandExecute, PlayQuizCommandCanExecute);
-        ExportQuizCommand = new RelayCommand(ExportQuizCommandExecute, PlayQuizCommandCanExecute);
+        RemoveQuizCommand = new RelayCommand(DeleteQuizCommandExecute, QuizIsSelected);
+        ExportQuizCommand = new RelayCommand(ExportQuizCommandExecute, QuizIsSelected);
         ImportQuizCommand = new RelayCommand(ImportQuizCommandExecute);
     }
 
@@ -75,7 +75,7 @@ public class MainMenuViewModel : ObservableObject
     {
         _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _quizStore,SelectedQuiz.Clone());
     }
-    public bool PlayQuizCommandCanExecute()
+    public bool QuizIsSelected()
     {
         return SelectedQuiz != null;
     }

@@ -195,7 +195,6 @@
                             </Style.Triggers>
                         </Style>
                     </Grid.Style>
-                    <!--<Image Source="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" />-->
                     <Border
                         Grid.Row="1"
                         Background="White"
@@ -216,7 +215,8 @@
                     FontWeight="Bold"
                     Foreground="CornflowerBlue"
                     Text="{Binding CurrentQuestion.Statement}"
-                    TextAlignment="Center">
+                    TextAlignment="Center"
+                    TextWrapping="WrapWithOverflow">
                     <TextBlock.Style>
                         <Style>
                             <Style.Triggers>

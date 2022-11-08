@@ -153,11 +153,19 @@ public class QuizStore
 
     public async void ExportQuizAsync(Quiz quiz, string path)
     {
-        await Task.Run(() => ZipFile.CreateFromDirectory(quiz.FolderPath, path));
+        await Task.Run(() =>
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            ZipFile.CreateFromDirectory(quiz.FolderPath, path);
+        });
     }
     public async void ImportQuizAsync(string path)
     {
-        string tempPath = Path.Combine(Path.GetTempPath(), "SuperDuperQuizzenNo1");
+        string tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         await Task.Run(() => ZipFile.ExtractToDirectory(path, tempPath, true));
         
         if (File.Exists(Path.Combine(tempPath, "Quiz.json")))
@@ -267,17 +275,21 @@ public class QuizStore
 
     public void InitAppFoldersAndFiles()
     {
-
+        string? currentDirr = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         if (!Directory.Exists(_appFolder))
         {
             Directory.CreateDirectory(_appFolder);
+
+            ImportQuizAsync(Path.Combine(currentDirr, @"Files\1.quiz"));
+            ImportQuizAsync(Path.Combine(currentDirr, @"Files\2.quiz"));
         }
 
         if (!File.Exists(Path.Combine(_appFolder, "noimage.jpg")))
         {
-            string? currentDirr = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            File.Move(Path.Combine(currentDirr, "Files\\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
+            File.Move(Path.Combine(currentDirr, @"Files\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
         }
+
+
     }
     private bool FileIsInsideFolder(DirectoryInfo file, DirectoryInfo folder)
     {
