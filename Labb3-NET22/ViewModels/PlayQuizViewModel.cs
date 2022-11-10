@@ -29,6 +29,7 @@ public class PlayQuizViewModel : ObservableObject
         set
         {
             SetProperty(ref _incorrectAnswer, value);
+            AnswerQuestionCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -38,6 +39,7 @@ public class PlayQuizViewModel : ObservableObject
         set
         {
             SetProperty(ref _correctAnswer, value);
+            AnswerQuestionCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -79,17 +81,17 @@ public class PlayQuizViewModel : ObservableObject
 
     private void AnswerQuestionCommandHandler(object parameter)
     {
-
-        CorrectAnswer = CurrentQuestion.CorrectAnswer;
+        //För att slippa att knapparna gråas ut så skriver vi direkt till backing fields och inte till properties. Då slipper vi att AnswerQuestionCommand.NotifyCanExecuteChanged() körs, och knapparna behåller sina fina färger även fast man inte kan trycka på dom
+        _correctAnswer = CurrentQuestion.CorrectAnswer;
 
         if (Int32.Parse(parameter.ToString()) != CorrectAnswer)
         {
-            IncorrectAnswer = Int32.Parse(parameter.ToString());
+            _incorrectAnswer = Int32.Parse(parameter.ToString());
         }
         else
         {
             score[0]++;
-            IncorrectAnswer = -1;
+            _incorrectAnswer = -1;
         }
 
         score[1]++;
@@ -131,6 +133,7 @@ public class PlayQuizViewModel : ObservableObject
         }
 
         await Task.Delay(1500);
+        //Nollställer färgerna på knapparna.
         CorrectAnswer = -1;
         IncorrectAnswer = -1;
         ImageFilePath = "";
@@ -138,6 +141,7 @@ public class PlayQuizViewModel : ObservableObject
 
         if (CurrentQuestion == null) // Sista frågan
         {
+            CorrectAnswer = -2;
 
             if (score[0] > score[1] / 2)
             {
@@ -147,18 +151,16 @@ public class PlayQuizViewModel : ObservableObject
             {
                 CurrentQuestion = new Question($"Bättre lycka nästa gång!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
             }
+
             await Task.Delay(2000);
             _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);
+
         }
         else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFilePath))
         {
             ShowImageView = true;
             ImageFilePath = CurrentQuestion.ImageFilePath;
         }
-
-        AnswerQuestionCommand.NotifyCanExecuteChanged();
-        OnPropertyChanged(nameof(CorrectAnswer));
-        OnPropertyChanged(nameof(IncorrectAnswer));
     }
 
 
