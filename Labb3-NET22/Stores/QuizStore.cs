@@ -16,10 +16,10 @@ namespace Labb3_NET22.Stores;
 
 public class QuizStore
 {
-    private IEnumerable<Quiz> _quizzes = new ObservableCollection<Quiz>();
-    private IEnumerable<Category> _categories = new ObservableCollection<Category>();
+    private readonly IEnumerable<Quiz> _quizzes = new ObservableCollection<Quiz>();
+    private readonly IEnumerable<Category> _categories = new ObservableCollection<Category>();
 
-    private string _appFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    private readonly string _appFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "SuperDuperQuizzenNo1");
     public IEnumerable<Category> Categories => _categories;
     public IEnumerable<Quiz> Quizzes => _quizzes;
@@ -98,7 +98,7 @@ public class QuizStore
             RemoveQuiz(toBeReplaced, true);
         }
     }
-    public async void SaveQuizAsync(Quiz quiz)
+    public async Task SaveQuizAsync(Quiz quiz)
     {
         
 
@@ -122,12 +122,12 @@ public class QuizStore
 
         string json = JsonSerializer.Serialize(quiz, new JsonSerializerOptions() { WriteIndented = true });
 
-        using (var writer = File.CreateText(Path.Combine(quiz.FolderPath, "Quiz.json")))
+        await using (var writer = File.CreateText(Path.Combine(quiz.FolderPath, "Quiz.json")))
         {
             await writer.WriteAsync(json);
         }
     }
-    public async void LoadAllQuizzesAsync()
+    public async Task LoadAllQuizzesAsync()
     {
 
         string[] directories = Directory.GetDirectories(_appFolder, "*", SearchOption.TopDirectoryOnly);
@@ -151,7 +151,7 @@ public class QuizStore
         }
     }
 
-    public async void ExportQuizAsync(Quiz quiz, string path)
+    public async Task ExportQuizAsync(Quiz quiz, string path)
     {
         await Task.Run(() =>
         {
@@ -163,7 +163,7 @@ public class QuizStore
             ZipFile.CreateFromDirectory(quiz.FolderPath, path);
         });
     }
-    public async void ImportQuizAsync(string path)
+    public async Task ImportQuizAsync(string path)
     {
         string tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         await Task.Run(() => ZipFile.ExtractToDirectory(path, tempPath, true));

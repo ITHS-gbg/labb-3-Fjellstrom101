@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Labb3_NET22.DataModels;
 using Labb3_NET22.Stores;
+using Microsoft.Win32;
 
 namespace Labb3_NET22.ViewModels;
 
 public class PlayQuizViewModel : ObservableObject
 {
-    private Quiz _quiz;
-    private Question _currentQuestion; // Inte planerad
-    private NavigationStore _navigationStore;
-    private QuizStore _quizStore;
+    private readonly Quiz _quiz;
+    private readonly NavigationStore _navigationStore;
+    private readonly QuizStore _quizStore;
+
+    private Question _currentQuestion;
     private int _incorrectAnswer = -1;
     private int _correctAnswer = -1;
-    private int[] score = new[] { 0, 0 };
-    private string _imageFilePath = "";
+    private int[] _score = new[] { 0, 0 };
+    private string _imageFilePath = Question.NoImageFilePath;
     private bool _showImageView = false;
 
 
@@ -52,7 +56,7 @@ public class PlayQuizViewModel : ObservableObject
         get => _currentQuestion;
     }
 
-    public String ImageFilePath
+    public string ImageFilePath
     {
         get => _imageFilePath;
         set
@@ -84,17 +88,19 @@ public class PlayQuizViewModel : ObservableObject
         //För att slippa att knapparna gråas ut så skriver vi direkt till backing fields och inte till properties. Då slipper vi att AnswerQuestionCommand.NotifyCanExecuteChanged() körs, och knapparna behåller sina fina färger även fast man inte kan trycka på dom
         _correctAnswer = CurrentQuestion.CorrectAnswer;
 
-        if (Int32.Parse(parameter.ToString()) != CorrectAnswer)
+        if (int.Parse(parameter.ToString()) != CorrectAnswer)
         {
-            _incorrectAnswer = Int32.Parse(parameter.ToString());
+            _incorrectAnswer = int.Parse(parameter.ToString());
+            SystemSounds.Exclamation.Play();
         }
         else
         {
-            score[0]++;
+            SystemSounds.Hand.Play();
+            _score[0]++;
             _incorrectAnswer = -1;
         }
 
-        score[1]++;
+        _score[1]++;
 
         OnPropertyChanged(nameof(CorrectAnswer));
         OnPropertyChanged(nameof(IncorrectAnswer));
@@ -107,7 +113,7 @@ public class PlayQuizViewModel : ObservableObject
         return IncorrectAnswer == -1 && CorrectAnswer == -1;
     }
 
-    private async void RenderQuestionAsync(bool firstQuestion = false)
+    private async Task RenderQuestionAsync(bool firstQuestion = false)
     {
         ShowImageView = false;
 
@@ -121,36 +127,27 @@ public class PlayQuizViewModel : ObservableObject
         }
         else
         {
-            ImageFilePath = "";
-            if (IncorrectAnswer == -1)
-            {
-                CurrentQuestion = new Question($"Rätt svar!\n Du har svarat rätt på {score[0]} av {score[1]} frågor!", "", "", CurrentQuestion.Answers, -1);
-            }
-            else
-            {
-                CurrentQuestion = new Question($"Fel svar!\n Du har svarat rätt på {score[0]} av {score[1]} frågor!", "", "", CurrentQuestion.Answers, -1);
-            }
+            //Om variabeln för felaktigt svar inte är satt, har användaren svarat rätt.
+            CurrentQuestion = IncorrectAnswer == -1 ? 
+                new Question($"Rätt svar!\n Du har svarat rätt på {_score[0]} av {_score[1]} frågor!", "", "", CurrentQuestion.Answers, -1) :
+                new Question($"Fel svar!\n Du har svarat rätt på {_score[0]} av {_score[1]} frågor!", "", "", CurrentQuestion.Answers, -1);
         }
 
         await Task.Delay(1500);
+
         //Nollställer färgerna på knapparna.
         CorrectAnswer = -1;
         IncorrectAnswer = -1;
-        ImageFilePath = "";
+
         CurrentQuestion = _quiz.GetRandomQuestion();
 
         if (CurrentQuestion == null) // Sista frågan
         {
             CorrectAnswer = -2;
 
-            if (score[0] > score[1] / 2)
-            {
-                CurrentQuestion = new Question($"Bra jobbat!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
-            }
-            else
-            {
-                CurrentQuestion = new Question($"Bättre lycka nästa gång!\n Du svarade rätt på {score[0]} av {score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
-            }
+            CurrentQuestion = _score[0] > _score[1] / 2 ?
+                new Question($"Bra jobbat!\n Du svarade rätt på {_score[0]} av {_score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1) :
+                new Question($"Bättre lycka nästa gång!\n Du svarade rätt på {_score[0]} av {_score[1]} frågor!", "", "", new[] { "", "", "", "" }, -1);
 
             await Task.Delay(2000);
             _navigationStore.CurrentViewModel = new MainMenuViewModel(_quizStore, _navigationStore);

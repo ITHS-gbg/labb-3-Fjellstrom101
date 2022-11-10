@@ -29,8 +29,6 @@ public class EditQuizViewModel : ObservableObject
     private Question? _selectedQuestion;
     private string _saveQuestionButtonText = "Spara";
     private BitmapImage _questionImage = new BitmapImage();
-    private readonly string _defaultImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "SuperDuperQuizzenNo1\\noimage.jpg");
 
 
     public ObservableCollection<Question> Questions { get; set; } = new ObservableCollection<Question>();
@@ -99,8 +97,10 @@ public class EditQuizViewModel : ObservableObject
         get => _imageFilePath;
         set
         {
-            
-            var uriSource = new Uri(_defaultImagePath);
+
+            var uriSource = string.IsNullOrEmpty(value) ? new Uri(Question.NoImageFilePath) : new Uri(value);
+
+
 
             if (!string.IsNullOrEmpty(value))
             {

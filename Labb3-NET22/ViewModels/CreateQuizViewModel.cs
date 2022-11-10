@@ -26,8 +26,6 @@ public class CreateQuizViewModel : ObservableObject
     private string _category = "";
     private Question? _selectedQuestion;
     private string _saveQuestionButtonText = "Spara";
-    private readonly string _defaultImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "SuperDuperQuizzenNo1\\noimage.jpg");
 
 
     public ObservableCollection<Question> Questions { get; set; } = new ObservableCollection<Question>();
@@ -92,7 +90,7 @@ public class CreateQuizViewModel : ObservableObject
     {
         get
         {
-            if (string.IsNullOrEmpty(_imageFilePath)) return _defaultImagePath;
+            if (string.IsNullOrEmpty(_imageFilePath)) return Question.NoImageFilePath;
             return _imageFilePath;
         }
         set
