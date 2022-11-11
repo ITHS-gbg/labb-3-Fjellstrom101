@@ -42,6 +42,8 @@ public class Quiz
 
     public Question GetRandomQuestion()
     {
+        if (!_questions.Any()) return null;
+
         var index = _random.Next(_questions.Count());
         var randomQuestion = _questions.ElementAtOrDefault(index);
 
@@ -51,7 +53,7 @@ public class Quiz
 
     public void AddQuestion(string statement, int correctAnswer, params string[] answers)
     {
-        (_questions as List<Question>)?.Add(new Question(statement, "Vanlig allmän fråga", "", answers, correctAnswer));
+        (_questions as List<Question>)?.Add(new Question(statement, "Allmänt", "", answers, correctAnswer));
     }
     public void AddQuestion(string statement, int correctAnswer, string category, string imageFilePath, params string[] answers)
     {

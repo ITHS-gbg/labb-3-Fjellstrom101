@@ -36,7 +36,6 @@ public class PlayQuizViewModel : ObservableObject
             AnswerQuestionCommand.NotifyCanExecuteChanged();
         }
     }
-
     public int CorrectAnswer
     {
         get => _correctAnswer;
@@ -46,33 +45,25 @@ public class PlayQuizViewModel : ObservableObject
             AnswerQuestionCommand.NotifyCanExecuteChanged();
         }
     }
-
     public Question CurrentQuestion
     {
-        set
-        {
-            SetProperty(ref _currentQuestion, value);
-        }
+        set => SetProperty(ref _currentQuestion, value);
         get => _currentQuestion;
     }
-
     public string ImageFilePath
     {
         get => _imageFilePath;
-        set
-        {
-            SetProperty(ref _imageFilePath, value);
-        }
+        set => SetProperty(ref _imageFilePath, value);
     }
     public bool ShowImageView
     {
         get => _showImageView;
-        set
-        {
-            SetProperty(ref _showImageView, value);
-        }
+        set => SetProperty(ref _showImageView, value);
     }
+
+
     public IRelayCommand AnswerQuestionCommand { get; }
+
     public PlayQuizViewModel(NavigationStore navigationStore, QuizStore quizStore, Quiz quiz)
     {
         _navigationStore = navigationStore;

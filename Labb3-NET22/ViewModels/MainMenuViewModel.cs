@@ -14,8 +14,10 @@ namespace Labb3_NET22.ViewModels;
 public class MainMenuViewModel : ObservableObject
 {
     private readonly QuizStore _quizStore;
+
     private Quiz _selectedQuiz; 
     private int _selectedCategoryIndex = -1;
+
     public Quiz SelectedQuiz
     {
         get => _selectedQuiz;
@@ -23,24 +25,19 @@ public class MainMenuViewModel : ObservableObject
         {
             SetProperty(ref _selectedQuiz, value);
 
-            if (value == null) CreateOrEditQuizButtonText = "Skapa Quiz";
-            else CreateOrEditQuizButtonText = "Ändra Quiz";
+            CreateOrEditQuizButtonText = value == null ? "Skapa Quiz" : "Ändra Quiz";
+
             OnPropertyChanged(nameof(CreateOrEditQuizButtonText));
             RemoveQuizCommand.NotifyCanExecuteChanged();
             PlayQuizCommand.NotifyCanExecuteChanged();
             ExportQuizCommand.NotifyCanExecuteChanged();
         }
     }
-
-
     public string CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
-
     public int CategoryQuestionAmount { get; set; } = 10;
-
     private readonly NavigationStore _navigationStore;
     public IEnumerable<Quiz> Quizzes => _quizStore.Quizzes;
     public IEnumerable<Category> Categories => _quizStore.Categories;
-
     public int SelectedCategoryIndex
     {
         get => _selectedCategoryIndex;
@@ -51,12 +48,14 @@ public class MainMenuViewModel : ObservableObject
         }
     }
 
+
     public IRelayCommand PlayQuizCommand { get; }
     public IRelayCommand CreateOrEditCommand { get; }
     public IRelayCommand RemoveQuizCommand { get; }
     public IRelayCommand GenerateQuizCommand { get; }
     public IRelayCommand ExportQuizCommand { get; }
     public IRelayCommand ImportQuizCommand { get; }
+
 
     public MainMenuViewModel(QuizStore quizStore, NavigationStore navigationStore)
     {

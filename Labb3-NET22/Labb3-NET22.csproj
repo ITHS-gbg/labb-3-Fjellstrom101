@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <Folder Include="DataModels\" />
-    <Folder Include="Files\" />
+    <Folder Include="Resources\" />
     <Folder Include="Stores\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
@@ -28,13 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Files\1.quiz">
+    <None Update="Resources\1.quiz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Files\2.quiz">
+    <None Update="Resources\2.quiz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Files\noImage.jpg">
+    <None Update="Resources\noImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -16,19 +16,21 @@ namespace Labb3_NET22.Stores;
 
 public class QuizStore
 {
-    private readonly IEnumerable<Quiz> _quizzes = new ObservableCollection<Quiz>();
-    private readonly IEnumerable<Category> _categories = new ObservableCollection<Category>();
-
     private readonly string _appFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "SuperDuperQuizzenNo1");
-    public IEnumerable<Category> Categories => _categories;
-    public IEnumerable<Quiz> Quizzes => _quizzes;
+
+
+    public IEnumerable<Category> Categories { get; } = new ObservableCollection<Category>();
+    public IEnumerable<Quiz> Quizzes { get; } = new ObservableCollection<Quiz>();
+
 
     public QuizStore()
     {
         InitAppFoldersAndFiles();
         LoadAllQuizzesAsync();
     }
+
+
 
     public void AddQuiz(Quiz quiz)
     {
@@ -39,7 +41,7 @@ public class QuizStore
 
         SaveQuizAsync(quiz);
 
-        (_quizzes as ObservableCollection<Quiz>)?.Add(quiz);
+        (Quizzes as ObservableCollection<Quiz>)?.Add(quiz);
 
         foreach (var question in quiz.Questions)
         {
@@ -53,7 +55,7 @@ public class QuizStore
     }
     public void RemoveQuiz(Quiz quiz, bool removeFiles = false)
     {
-        (_quizzes as ObservableCollection<Quiz>)?.Remove(quiz);
+        (Quizzes as ObservableCollection<Quiz>)?.Remove(quiz);
 
         foreach (var question in quiz.Questions)
         {
@@ -74,7 +76,6 @@ public class QuizStore
             Directory.Delete(quiz.FolderPath, true);
         }
     }
-
     public void ReplaceQuiz(Quiz toBeReplaced, Quiz replacement)
     {
         if (toBeReplaced.Title.Equals(replacement.Title))
@@ -127,7 +128,7 @@ public class QuizStore
             await writer.WriteAsync(json);
         }
     }
-    public async Task LoadAllQuizzesAsync()
+    private async Task LoadAllQuizzesAsync()
     {
 
         string[] directories = Directory.GetDirectories(_appFolder, "*", SearchOption.TopDirectoryOnly);
@@ -141,7 +142,7 @@ public class QuizStore
                     string json = await reader.ReadToEndAsync();
                     Quiz? temp = JsonSerializer.Deserialize<Quiz>(json);
 
-                    (_quizzes as ObservableCollection<Quiz>)?.Add(temp);
+                    (Quizzes as ObservableCollection<Quiz>)?.Add(temp);
                     foreach (var question in temp.Questions)
                     {
                         AddQuestionToCategory(question);
@@ -150,7 +151,6 @@ public class QuizStore
             }
         }
     }
-
     public async Task ExportQuizAsync(Quiz quiz, string path)
     {
         await Task.Run(() =>
@@ -193,7 +193,6 @@ public class QuizStore
         }
 
     }
-
     public Quiz GenerateQuizByCategories(Category[] categories, int amount)
     {
         List<Question> questions = new List<Question>();
@@ -214,8 +213,7 @@ public class QuizStore
 
         return returnQuiz;
     }
-
-    public string GenerateFolderName(string title)
+    private string GenerateFolderName(string title)
     {
         string legalFileName = title;
 
@@ -237,8 +235,7 @@ public class QuizStore
 
         return (Path.Combine(_appFolder, legalFileName));
     }
-
-    public string GenerateImagePath(Quiz quiz, string imagePath)
+    private string GenerateImagePath(Quiz quiz, string imagePath)
     {
         var newFileName = String.Empty;
         var directory = new DirectoryInfo(Path.Combine(quiz.FolderPath, "Images"));
@@ -263,31 +260,29 @@ public class QuizStore
 
         return Path.Combine(quiz.FolderPath, "Images", newFileName); ;
     }
-
-    public void AddQuestionToCategory(Question question)
+    private void AddQuestionToCategory(Question question)
     {
-        if (!_categories.Any(a => a.Title.Equals(question.Category)))
+        if (!Categories.Any(a => a.Title.Equals(question.Category)))
         {
-            (_categories as ObservableCollection<Category>).Add(new Category(question.Category));
+            (Categories as ObservableCollection<Category>).Add(new Category(question.Category));
         }
 
-        _categories.First(a => a.Title.Equals(question.Category)).AddQuestion(question);
+        Categories.First(a => a.Title.Equals(question.Category)).AddQuestion(question);
     }
-
-    public void InitAppFoldersAndFiles()
+    private void InitAppFoldersAndFiles()
     {
         string? currentDirr = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         if (!Directory.Exists(_appFolder))
         {
             Directory.CreateDirectory(_appFolder);
 
-            ImportQuizAsync(Path.Combine(currentDirr, @"Files\1.quiz"));
-            ImportQuizAsync(Path.Combine(currentDirr, @"Files\2.quiz"));
+            ImportQuizAsync(Path.Combine(currentDirr, @"Resources\1.quiz"));
+            ImportQuizAsync(Path.Combine(currentDirr, @"Resources\2.quiz"));
         }
 
         if (!File.Exists(Path.Combine(_appFolder, "noimage.jpg")))
         {
-            File.Move(Path.Combine(currentDirr, @"Files\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
+            File.Move(Path.Combine(currentDirr, @"Resources\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
         }
 
 
@@ -306,7 +301,6 @@ public class QuizStore
 
         return FileIsInsideFolder(file.Parent, folder);
     }
-
     public IEnumerable<string> GetCategoriesStringList()
     {
         List<string> retList = new List<string>();
@@ -320,6 +314,6 @@ public class QuizStore
             "Sport/Fritid"
         });
 
-        return _categories.Select(a => a.Title).Concat(retList).Distinct();
+        return Categories.Select(a => a.Title).Concat(retList).Distinct();
     }
 }

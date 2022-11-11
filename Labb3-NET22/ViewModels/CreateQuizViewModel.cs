@@ -18,6 +18,7 @@ public class CreateQuizViewModel : ObservableObject
     private readonly NavigationStore _navigationStore;
     private readonly QuizStore _quizStore;
 
+
     private string _title = "";
     private string _statement = "";
     private ObservableCollection<string> _answers = new ObservableCollection<string>() {"", "", "", ""};
@@ -38,8 +39,6 @@ public class CreateQuizViewModel : ObservableObject
             SaveCommand.NotifyCanExecuteChanged();
         }
     }
-
-
     public Question? SelectedQuestion
     {
         get => _selectedQuestion;
@@ -114,9 +113,11 @@ public class CreateQuizViewModel : ObservableObject
         get => _saveQuestionButtonText;
         set => SetProperty(ref _saveQuestionButtonText, value);
     }
-
     public ObservableCollection<string> Categories { get; set; } = new ObservableCollection<string>();
     public bool QuestionIsSelected => SelectedQuestion != null;
+
+
+
 
     public IRelayCommand SaveCommand { get; }
     public IRelayCommand CancelCommand { get; }
@@ -124,6 +125,9 @@ public class CreateQuizViewModel : ObservableObject
     public IRelayCommand DeleteImageCommand { get; }
     public IRelayCommand AddQuestionCommand { get; }
     public IRelayCommand DeleteQuestionCommand { get; }
+
+
+
 
     public CreateQuizViewModel(NavigationStore navigationStore, QuizStore quizStore)
     {
@@ -144,6 +148,9 @@ public class CreateQuizViewModel : ObservableObject
             Categories.Add(categoryString);
         }
     }
+
+
+
 
     public void SaveCommandExecute()
     {

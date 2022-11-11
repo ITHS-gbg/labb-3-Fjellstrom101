@@ -10,7 +10,7 @@ public class NavigationStore
 
 	public ObservableObject CurrentViewModel
 	{
-		get { return _currentViewModel; }
+		get => _currentViewModel;
         set
         {
             _currentViewModel = value;
