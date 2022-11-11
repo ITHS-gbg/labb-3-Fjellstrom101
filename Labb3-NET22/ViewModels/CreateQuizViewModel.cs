@@ -88,11 +88,7 @@ public class CreateQuizViewModel : ObservableObject
     }
     public string ImageFilePath
     {
-        get
-        {
-            if (string.IsNullOrEmpty(_imageFilePath)) return Question.NoImageFilePath;
-            return _imageFilePath;
-        }
+        get => _imageFilePath;
         set
         {
             SetProperty(ref _imageFilePath, value);
@@ -102,10 +98,7 @@ public class CreateQuizViewModel : ObservableObject
     public int CorrectAnswer
     {
         get => _correctAnswer;
-        set
-        {
-            SetProperty(ref _correctAnswer, value);
-        }
+        set => SetProperty(ref _correctAnswer, value);
     }
     public string Category
     {
@@ -119,10 +112,7 @@ public class CreateQuizViewModel : ObservableObject
     public string SaveQuestionButtonText
     {
         get => _saveQuestionButtonText;
-        set
-        {
-            SetProperty(ref _saveQuestionButtonText, value);
-        }
+        set => SetProperty(ref _saveQuestionButtonText, value);
     }
 
     public ObservableCollection<string> Categories { get; set; } = new ObservableCollection<string>();

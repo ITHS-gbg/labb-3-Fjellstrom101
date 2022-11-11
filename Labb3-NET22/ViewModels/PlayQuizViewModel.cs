@@ -23,7 +23,7 @@ public class PlayQuizViewModel : ObservableObject
     private int _incorrectAnswer = -1;
     private int _correctAnswer = -1;
     private int[] _score = new[] { 0, 0 };
-    private string _imageFilePath = Question.NoImageFilePath;
+    private string _imageFilePath;
     private bool _showImageView = false;
 
 

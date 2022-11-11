@@ -15,6 +15,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:CorrectAnswerConverter x:Key="CorrectAnswerConverter" />
+        <converters:StringToBitmapImageConverter x:Key="StringToBitmapImageConverter" />
 
 
     </UserControl.Resources>
@@ -135,7 +136,6 @@
                     Style="{StaticResource RoundCorners}"
                     Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" />
             </Border>
-            <!--<TextBox Grid.Row="1" Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" />-->
         </Grid>
 
         <!--  Bild  -->
@@ -152,7 +152,7 @@
                 CornerRadius="6"
                 Style="{StaticResource ImageElement}">
                 <Border.Background>
-                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" />
+                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="Uniform" />
                 </Border.Background>
             </Border>
         </Grid>

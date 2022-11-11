@@ -255,7 +255,8 @@ public class QuizStore
         else
         {
             var filename = directory.GetFiles()
-                .OrderBy(a => Path.GetFileNameWithoutExtension(a.Name).Length).ThenBy(a => a.Name)
+                .OrderBy(a => Path.GetFileNameWithoutExtension(a.Name).Length)
+                .ThenBy(a => a.Name)
                 .Last().Name;
             newFileName = (int.Parse(Path.GetFileNameWithoutExtension(filename)) + 1) + Path.GetExtension(imagePath);
         }

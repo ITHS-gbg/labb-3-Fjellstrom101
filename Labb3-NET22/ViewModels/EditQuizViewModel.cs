@@ -28,7 +28,6 @@ public class EditQuizViewModel : ObservableObject
     private string _category = "";
     private Question? _selectedQuestion;
     private string _saveQuestionButtonText = "Spara";
-    private BitmapImage _questionImage = new BitmapImage();
 
 
     public ObservableCollection<Question> Questions { get; set; } = new ObservableCollection<Question>();
@@ -97,23 +96,6 @@ public class EditQuizViewModel : ObservableObject
         get => _imageFilePath;
         set
         {
-
-            var uriSource = string.IsNullOrEmpty(value) ? new Uri(Question.NoImageFilePath) : new Uri(value);
-
-
-
-            if (!string.IsNullOrEmpty(value))
-            {
-                uriSource = new Uri(value);
-            }
-
-            _questionImage = new BitmapImage();
-            _questionImage.BeginInit();
-            _questionImage.CacheOption = BitmapCacheOption.OnLoad;
-            _questionImage.UriSource = uriSource;
-            _questionImage.EndInit();
-            OnPropertyChanged(nameof(QuestionImage));
-            
             SetProperty(ref _imageFilePath, value);
             DeleteImageCommand.NotifyCanExecuteChanged();
         }
@@ -121,10 +103,7 @@ public class EditQuizViewModel : ObservableObject
     public int CorrectAnswer
     {
         get => _correctAnswer;
-        set
-        {
-            SetProperty(ref _correctAnswer, value);
-        }
+        set => SetProperty(ref _correctAnswer, value);
     }
     public string Category
     {
@@ -138,20 +117,10 @@ public class EditQuizViewModel : ObservableObject
     public string SaveQuestionButtonText
     {
         get => _saveQuestionButtonText;
-        set
-        {
-            SetProperty(ref _saveQuestionButtonText, value);
-        }
+        set => SetProperty(ref _saveQuestionButtonText, value);
     }
 
-    public BitmapImage QuestionImage
-    {
-        get => _questionImage;
-        set
-        {
-            SetProperty(ref _questionImage, value);
-        }
-    }
+
 
     public ObservableCollection<string> Categories { get; set; } = new ObservableCollection<string>();
     public bool QuestionIsSelected => SelectedQuestion != null;
@@ -180,7 +149,6 @@ public class EditQuizViewModel : ObservableObject
         Answers.CollectionChanged += (sender, e) => { AddQuestionCommand.NotifyCanExecuteChanged(); SaveCommand.NotifyCanExecuteChanged(); };
 
         
-        ImageFilePath = string.Empty;
 
         Title = quiz.Title;
 

@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+            <converters:StringToBitmapImageConverter x:Key="StringToBitmapImageConverter" />
             <Style x:Key="QuizButton" TargetType="Button">
                 <Setter Property="Margin" Value="6" />
                 <Setter Property="Background" Value="White" />
@@ -174,7 +175,7 @@
                         <DataTrigger Binding="{Binding ShowImageView, UpdateSourceTrigger=PropertyChanged}" Value="True">
                             <Setter Property="Border.Background">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" />
+                                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="UniformToFill" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
