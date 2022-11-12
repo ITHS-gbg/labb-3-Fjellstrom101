@@ -26,8 +26,7 @@ public class QuizStore
 
     public QuizStore()
     {
-        InitAppFoldersAndFiles();
-        LoadAllQuizzesAsync();
+        Initialize();
     }
 
 
@@ -269,21 +268,25 @@ public class QuizStore
 
         Categories.First(a => a.Title.Equals(question.Category)).AddQuestion(question);
     }
-    private void InitAppFoldersAndFiles()
+    private async Task Initialize()
     {
-        string? currentDirr = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+
         if (!Directory.Exists(_appFolder))
         {
+            var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Directory.CreateDirectory(_appFolder);
 
-            ImportQuizAsync(Path.Combine(currentDirr, @"Resources\1.quiz"));
-            ImportQuizAsync(Path.Combine(currentDirr, @"Resources\2.quiz"));
+            await ImportQuizAsync(Path.Combine(currentDir, @"Resources\1.quiz"));
+            await ImportQuizAsync(Path.Combine(currentDir, @"Resources\2.quiz"));
+
+            File.Move(Path.Combine(currentDir, @"Resources\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
+        }
+        else
+        {
+            await LoadAllQuizzesAsync();
         }
 
-        if (!File.Exists(Path.Combine(_appFolder, "noimage.jpg")))
-        {
-            File.Move(Path.Combine(currentDirr, @"Resources\noimage.jpg"), Path.Combine(_appFolder, "noimage.jpg"));
-        }
 
 
     }
