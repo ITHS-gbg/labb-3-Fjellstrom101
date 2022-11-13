@@ -13,6 +13,7 @@ namespace Labb3_NET22.ViewModels;
 
 public class MainMenuViewModel : ObservableObject
 {
+    private readonly NavigationStore _navigationStore;
     private readonly QuizStore _quizStore;
 
     private Quiz _selectedQuiz; 
@@ -35,7 +36,7 @@ public class MainMenuViewModel : ObservableObject
     }
     public string CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
     public int CategoryQuestionAmount { get; set; } = 10;
-    private readonly NavigationStore _navigationStore;
+    
     public IEnumerable<Quiz> Quizzes => _quizStore.Quizzes;
     public IEnumerable<Category> Categories => _quizStore.Categories;
     public int SelectedCategoryIndex
@@ -61,6 +62,7 @@ public class MainMenuViewModel : ObservableObject
     {
         _quizStore = quizStore;
         _navigationStore = navigationStore;
+
         PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, QuizIsSelected);
         CreateOrEditCommand = new RelayCommand(CreateOrEditCommandExecute);
         GenerateQuizCommand = new RelayCommand<object>((param) => { GenerateQuizCommandExecute(param); }, GenerateQuizCommandCanExecute);

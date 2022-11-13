@@ -23,7 +23,7 @@
       <FileName>DataModels\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Labb3_NET22.DataModels.Question">
+  <Class Name="Labb3_NET22.DataModels.Question" Collapsed="true">
     <Position X="3.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAABEQAAABAAACAA=</HashCode>

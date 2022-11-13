@@ -9,14 +9,14 @@ namespace Labb3_NET22.DataModels;
 public class Quiz
 {
     private IEnumerable<Question> _questions;
-    private readonly string _title = string.Empty;
-
+    private string _title = string.Empty;
+    private readonly Random _random = new();
 
     public IEnumerable<Question> Questions => _questions;
     public string Title => _title;
     public string FolderPath { get; set; }
 
-    private readonly Random _random = new();
+
 
     public Quiz()
     {

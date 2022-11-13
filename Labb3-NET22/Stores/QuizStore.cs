@@ -98,7 +98,7 @@ public class QuizStore
             RemoveQuiz(toBeReplaced, true);
         }
     }
-    public async Task SaveQuizAsync(Quiz quiz)
+    private async Task SaveQuizAsync(Quiz quiz)
     {
         
 

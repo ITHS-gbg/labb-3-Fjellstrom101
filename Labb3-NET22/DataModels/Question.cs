@@ -7,10 +7,11 @@ public class Question
 {
     public string Statement { get; }
     public string[] Answers { get; }
+    public int CorrectAnswer { get; }
 
     public string ImageFilePath { get; set; }
     public string Category { get; }
-    public int CorrectAnswer { get; }
+
 
     public static string NoImageFilePath =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
